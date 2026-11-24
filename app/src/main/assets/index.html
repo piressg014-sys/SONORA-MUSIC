@@ -521,16 +521,36 @@ body.dark-mode{background:#11131b;color:#f1f2f7}body.dark-mode .videoWash{backgr
 @media(max-width:370px){.home-feature-grid{grid-template-columns:1fr}.home-feature{min-height:85px}.player-shortcuts button{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.album-area:before,.album-area:after{animation:none!important}}
 
+
+/* SONORA — autenticação Firebase */
+.auth-screen{position:fixed;inset:0;z-index:2000;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(circle at 50% 12%,#fff 0,#f5f4fb 52%,#e9eaf4 100%);color:#202235;overflow:auto}
+.auth-card{width:min(420px,100%);padding:30px 24px 25px;border:1px solid #ffffffd9;border-radius:30px;background:#ffffffdc;box-shadow:0 25px 80px #28254a18;backdrop-filter:blur(20px);text-align:center}
+.auth-brand-mark{width:66px;height:66px;margin:0 auto 16px;border-radius:21px;display:grid;place-items:center;background:linear-gradient(145deg,#28283b,#6d5bc4);color:#fff;font-size:30px;box-shadow:0 12px 28px #6557b633}
+.auth-brand{font-size:25px;font-weight:900;letter-spacing:5px}.auth-sub{margin:8px 0 25px;color:#9699a8;font-size:10px;font-weight:800;letter-spacing:2px}
+.auth-title{font-size:22px;font-weight:800;margin-bottom:7px}.auth-copy{font-size:12px;line-height:1.5;color:#9295a3;margin-bottom:20px}
+.auth-input{display:block;width:100%;height:51px;margin:10px 0;padding:0 15px;border:1px solid #e8e8f0;border-radius:15px;background:#fff;color:#252638;font-size:14px;outline:none}.auth-input:focus{border-color:#9587e2;box-shadow:0 0 0 3px #9587e222}
+.auth-primary,.auth-google{width:100%;height:51px;margin-top:10px;border:0;border-radius:15px;font-weight:800;font-size:13px;cursor:pointer}.auth-primary{background:linear-gradient(110deg,#29283a,#6758bc);color:#fff;box-shadow:0 10px 22px #6557b62b}.auth-google{background:#fff;border:1px solid #e7e7ee;color:#333447}.auth-links{display:flex;justify-content:space-between;gap:8px;margin-top:17px}.auth-link{border:0;background:transparent;color:#7567c6;font-size:11px;font-weight:700;padding:8px 2px}.auth-message{min-height:19px;margin:12px 0 0;color:#a04c63;font-size:11px;line-height:1.45}.auth-message.success{color:#36815a}.auth-legal{margin-top:17px;color:#a7a8b2;font-size:9px;line-height:1.5}
+body.dark-mode .auth-screen{background:radial-gradient(circle at 50% 12%,#29283a,#151621 70%)}body.dark-mode .auth-card{background:#222331ed;border-color:#3a394b;color:#f3f2fa}body.dark-mode .auth-input{background:#191a27;border-color:#414052;color:#fff}body.dark-mode .auth-google{background:#292a39;border-color:#444456;color:#fff}
+
 </style>
 </head>
 
 <body>
-<div class="splash-screen" id="splashScreen">
-  <div class="splash-mark">♫</div>
-  <div class="splash-title">SONORA</div>
-  <div class="splash-sub">MUSIC • SUA EXPERIÊNCIA</div>
-  <button class="splash-enter" type="button" onclick="enterSonora()">ENTRAR</button>
-</div>
+<section class="auth-screen" id="authScreen" aria-label="Acesso SONORA">
+ <div class="auth-card">
+  <div class="auth-brand-mark">♫</div><div class="auth-brand">SONORA</div>
+  <div class="auth-sub">MUSIC • SUA EXPERIÊNCIA</div>
+  <h1 class="auth-title" id="authTitle">Entre na sua conta</h1>
+  <p class="auth-copy" id="authCopy">Acesse sua experiência musical e mantenha sua biblioteca com você.</p>
+  <input class="auth-input" id="authEmail" type="email" autocomplete="email" placeholder="Seu e-mail">
+  <input class="auth-input" id="authPassword" type="password" autocomplete="current-password" placeholder="Sua senha">
+  <button class="auth-primary" id="authSubmit" type="button" onclick="submitSonoraAuth()">ENTRAR</button>
+  <button class="auth-google" type="button" onclick="sonoraGoogleLogin()">G  Continuar com Google</button>
+  <div class="auth-links"><button class="auth-link" id="authModeToggle" onclick="toggleSonoraAuthMode()">Criar uma conta</button><button class="auth-link" onclick="sonoraResetPassword()">Esqueci a senha</button></div>
+  <p class="auth-message" id="authMessage" role="status"></p>
+  <p class="auth-legal">Sua conta é protegida pelo Firebase Authentication.</p>
+ </div>
+</section>
 <img id="artistBackdrop" alt="Foto do artista ao fundo">
 <div class="videoWash"></div>
 <div class="app">
@@ -550,6 +570,7 @@ body.dark-mode{background:#11131b;color:#f1f2f7}body.dark-mode .videoWash{backgr
     <button onclick="menuOpen('profileModal')"><span class="menu-symbol">◉</span><span><b>Meu perfil</b><small>Foto e identificação</small></span><span class="menu-arrow">›</span></button>
     <button onclick="menuOpen('updatesModal')"><span class="menu-symbol">✧</span><span><b>Novidades</b><small>Veja o que mudou</small></span><span class="menu-arrow">›</span></button>
     <button onclick="toggleColorMode();toggleMainMenu(false)"><span class="menu-symbol" id="menuModeIcon">☾</span><span><b>Modo claro / escuro</b><small>Trocar aparência</small></span><span class="menu-arrow">›</span></button>
+    <button onclick="sonoraLogout();toggleMainMenu(false)"><span class="menu-symbol">⇥</span><span><b>Sair da conta</b><small>Encerrar sua sessão SONORA</small></span><span class="menu-arrow">›</span></button>
   </nav>
 </div>
 
@@ -1281,9 +1302,55 @@ function renderRecentTracks(){
 
 let sonoraPlaylists = [];
 let activeSonoraPlaylist = -1;
-function enterSonora() {
-  document.getElementById("splashScreen").classList.add("hide");
+let sonoraAuthMode = "login";
+let sonoraAuthBusy = false;
+function setSonoraAuthMessage(message, success=false){
+ const el=document.getElementById("authMessage");el.textContent=message||"";el.classList.toggle("success",!!success);
 }
+function toggleSonoraAuthMode(){
+ sonoraAuthMode=sonoraAuthMode==="login"?"register":"login";
+ document.getElementById("authTitle").textContent=sonoraAuthMode==="login"?"Entre na sua conta":"Crie sua conta";
+ document.getElementById("authCopy").textContent=sonoraAuthMode==="login"?"Acesse sua experiência musical e mantenha sua biblioteca com você.":"Cadastre seu e-mail e uma senha para começar no SONORA.";
+ document.getElementById("authSubmit").textContent=sonoraAuthMode==="login"?"ENTRAR":"CRIAR CONTA";
+ document.getElementById("authModeToggle").textContent=sonoraAuthMode==="login"?"Criar uma conta":"Já tenho uma conta";
+ document.getElementById("authPassword").autocomplete=sonoraAuthMode==="login"?"current-password":"new-password";
+ setSonoraAuthMessage("");
+}
+function setSonoraAuthBusy(busy){
+ sonoraAuthBusy=busy;const b=document.getElementById("authSubmit");b.disabled=busy;b.style.opacity=busy?".65":"1";
+ b.textContent=busy?"AGUARDE...":(sonoraAuthMode==="login"?"ENTRAR":"CRIAR CONTA");
+}
+function submitSonoraAuth(){
+ if(sonoraAuthBusy)return;
+ const email=document.getElementById("authEmail").value.trim();
+ const password=document.getElementById("authPassword").value;
+ if(!email||!password){setSonoraAuthMessage("Informe seu e-mail e sua senha.");return;}
+ if(password.length<6){setSonoraAuthMessage("A senha precisa ter pelo menos 6 caracteres.");return;}
+ if(!window.SonoraBridge){setSonoraAuthMessage("Não foi possível conectar ao serviço de autenticação.");return;}
+ setSonoraAuthBusy(true);setSonoraAuthMessage(sonoraAuthMode==="login"?"Verificando seu acesso...":"Criando sua conta...");
+ if(sonoraAuthMode==="login")window.SonoraBridge.login(email,password);else window.SonoraBridge.register(email,password);
+}
+function sonoraGoogleLogin(){
+ if(!window.SonoraBridge){setSonoraAuthMessage("Serviço de autenticação indisponível.");return;}
+ setSonoraAuthBusy(true);setSonoraAuthMessage("Abrindo o Google...");window.SonoraBridge.googleSignIn();
+}
+function sonoraResetPassword(){
+ const email=document.getElementById("authEmail").value.trim();
+ if(!email){setSonoraAuthMessage("Digite seu e-mail acima para receber o link de recuperação.");document.getElementById("authEmail").focus();return;}
+ setSonoraAuthBusy(true);setSonoraAuthMessage("Enviando link de recuperação...");window.SonoraBridge.resetPassword(email);
+}
+function sonoraLogout(){if(window.SonoraBridge)window.SonoraBridge.logout();}
+window.sonoraAuthResult=function(success,message,email){
+ setSonoraAuthBusy(false);setSonoraAuthMessage(message,success);
+ if(success && email){document.getElementById("authEmail").value=email;}
+ if(success && (message.includes("Login realizado")||message.includes("Conta criada")||message.includes("Login com Google"))){window.sonoraSetAuthState(true,email);}
+};
+window.sonoraSetAuthState=function(isAuthenticated,email){
+ const screen=document.getElementById("authScreen");
+ if(isAuthenticated){screen.style.display="none";document.getElementById("profileDisplayName")?.textContent;}
+ else{screen.style.display="flex";setSonoraAuthBusy(false);setSonoraAuthMessage("");}
+};
+
 function createSonoraPlaylist() {
   const input = document.getElementById("newPlaylistName");
   const name = input.value.trim();
