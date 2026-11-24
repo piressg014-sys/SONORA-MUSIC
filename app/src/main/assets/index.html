@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#ffffff">
-<title>SONORA Music 7.0</title>
+<title>SONORA Music 8.0</title>
 
 <style>
 * {
@@ -480,6 +480,47 @@ body.is-playing .album-area:before{border-width:2px;box-shadow:0 0 22px color-mi
 body.dark-mode .main-menu-sheet{background:#1b1b24;color:#f4f1f7}body.dark-mode .main-menu-head{border-color:#34313c}body.dark-mode .main-menu-head button,body.dark-mode .menu-symbol{background:#292632;color:#e9d8ff}body.dark-mode .main-menu-sheet>button{border-color:#302d38}body.dark-mode .main-menu-sheet small{color:#aaa1b1}body.dark-mode .main-menu-button{background:#25232d;border-color:#3a3543}body.dark-mode .main-menu-button span{background:#f4f1f7}
 @media(prefers-reduced-motion:reduce){.album-area:before,.album-area:after,.vinyl-center i{animation:none!important}}
 
+
+/* SONORA MUSIC 8.0 — WHITE LUXURY */
+:root{--s8-ink:#171923;--s8-muted:#8d929d;--s8-line:#eceef2;--s8-soft:#f7f8fa;--s8-accent:#7b69d8;--s8-accent2:#b7a8f4}
+body{background:#f7f8fb;color:var(--s8-ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;letter-spacing:-.01em}
+.videoWash{background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(248,249,252,.78) 42%,rgba(247,248,251,.97))}
+#artistBackdrop{filter:blur(4px) saturate(.65);opacity:0}
+#artistBackdrop.active{opacity:.14}
+.app{max-width:520px;padding:22px 20px 42px}
+header{margin-bottom:28px}.logo{font-size:23px;letter-spacing:4.8px;color:#171923}.logo span{color:var(--s8-accent)}
+.main-menu-button{background:#fff;border:1px solid #eceef3;box-shadow:0 8px 24px #20243a0d;border-radius:16px}
+.main-menu-button span{background:#262936}
+.subtitle,.home-eyebrow{color:#a0a4af;font-size:10px;font-weight:800;letter-spacing:2px}
+h2{font-size:25px;letter-spacing:-.8px;color:#1d2030}
+.album-area{width:min(88vw,350px);height:min(88vw,350px);margin:8px auto 20px}
+.album-area:before,.album-area:after{border-color:#b7a8f4}
+.disc{width:min(46vw,180px);height:min(46vw,180px);padding:8px;background:linear-gradient(145deg,#fff,#e7e9ef);box-shadow:0 0 0 8px #ffffffd9,0 22px 55px #27243d20,0 0 42px #b7a8f444}
+.vinyl-record{background:repeating-radial-gradient(circle at center,#252630 0 2px,#333541 3px 4px,#20212a 5px 7px)!important;border:1px solid #555766}
+.vinyl-record:before{border-color:#c9c0f7;inset:-10px;opacity:.9}
+.vinyl-label{width:38%;height:38%;left:31%;top:31%;border:3px solid #fff;box-shadow:0 2px 14px #0005;background:radial-gradient(circle at 35% 30%,#fff,#c9bdf5 55%,#7563c9)!important}
+.vinyl-center i{background:#fff;box-shadow:0 0 7px #fff}
+.track-info h3{font-size:24px;font-weight:850;letter-spacing:-.6px;color:#191b26}.track-info p{color:#8d929d}
+.progress{accent-color:var(--s8-accent)}.controls{margin:24px 0}.controls button{color:#343746}.controls .play{background:linear-gradient(145deg,#292b38,#11131c);box-shadow:0 12px 26px #1d20352b;width:70px;height:70px}
+.orbit-control{background:#fff!important;color:#6d5bc3!important;border:1px solid #eeebf8!important;box-shadow:0 8px 22px #24203916!important}
+.orbit-volume{background:#fff!important;border:1px solid #eceef3!important;box-shadow:0 8px 22px #24203912!important;color:#777b87!important}
+.orbit-volume input{accent-color:var(--s8-accent)}
+.player-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:22px 0 28px}
+.player-shortcuts button,.home-add{border:1px solid #eceef3;background:#fff;color:#454957;border-radius:15px;padding:12px 8px;font-size:11px;font-weight:750;box-shadow:0 6px 18px #20243a08}
+.lyrics-panel,.library{background:#fff;border:1px solid #eceef3;border-radius:24px;padding:18px;box-shadow:0 12px 32px #20243a08}
+.lyrics-heading h3,.library h3{color:#202331}.lyrics-status,.lyrics-credit{color:#999eaa}
+.artist-search,.modal-field{border:1px solid #e9ebf1!important;background:#fafbfc!important;border-radius:14px!important;color:#202331!important}
+.song{border-color:#f0f1f5}.song-cover{border-radius:14px;background:linear-gradient(145deg,#f0edff,#e4e9f8);color:#7564c7}.song-info p{color:#9a9eaa}.song button{color:#6e5bc7}
+.splash-screen{background:radial-gradient(circle at 50% 38%,#fff 0,#f7f7fc 55%,#ececf6 100%);color:#1b1d29}.splash-mark{color:#7868cc}.splash-enter{background:#222432;border-radius:16px;box-shadow:0 12px 26px #23243b24}
+.feature-modal{background:#191a2480;backdrop-filter:blur(9px)}.modal-sheet{background:#fff;border:1px solid #eceef3;border-radius:28px 28px 0 0;box-shadow:0 -15px 55px #20243a1c}.modal-head h3{color:#222432}.modal-copy{color:#858a96}.modal-action{background:#242635!important;border-radius:13px!important}.modal-secondary{border-radius:13px!important;background:#f5f5f9!important;color:#555a68!important}
+.premium-hero{background:linear-gradient(135deg,#242536,#6d5ac2 70%,#b9a9ef);border-radius:22px}
+.main-menu-sheet{border:1px solid #eceef3;box-shadow:0 24px 70px #20243a22}.menu-symbol{background:#f3f1fc;color:#7160c5}.menu-symbol.vip-symbol,.premium-star{color:#b28a36;text-shadow:none}
+.sonora-home{margin:28px 0 26px}.home-heading{display:flex;align-items:end;justify-content:space-between;gap:12px;margin:0 0 14px}.home-heading h2{font-size:19px;margin:5px 0 0}.home-add{padding:10px 13px;color:#6555b4}.home-feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}.home-feature{min-height:132px;border:1px solid #eceef3;border-radius:20px;padding:13px 11px;text-align:left;background:#fff;box-shadow:0 10px 25px #20243a08;display:flex;flex-direction:column;align-items:flex-start;gap:8px;color:#252838}.feature-icon{width:34px;height:34px;border-radius:12px;display:grid;place-items:center;background:#f1effc;color:#7160c5;font-size:18px}.feature-playlist .feature-icon{background:#edf4fb;color:#5983b5}.feature-ai .feature-icon{background:#f7f0fb;color:#a06dbb}.home-feature strong{font-size:12px}.home-feature small{font-size:10px;line-height:1.35;color:#969ba6}.home-library-heading{margin-top:25px}.home-count{font-size:10px;color:#a0a4af;padding-bottom:3px}.recent-track-list{background:#fff;border:1px solid #eceef3;border-radius:20px;padding:5px 14px;box-shadow:0 10px 25px #20243a08}.recent-empty{padding:17px 4px;color:#9a9eaa;font-size:12px}.recent-track{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid #f1f2f6}.recent-track:last-child{border-bottom:0}.recent-art{width:42px;height:42px;flex:0 0 42px;border-radius:13px;display:grid;place-items:center;background:linear-gradient(145deg,#f0edff,#e7ebf8);color:#7665c8;font-size:18px}.recent-meta{flex:1;min-width:0}.recent-meta strong{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#252838}.recent-meta small{display:block;color:#9a9eaa;font-size:10px;margin-top:4px}.recent-play{border:0;background:#f3f1fc;color:#6d5bc3;border-radius:50%;width:34px;height:34px;font-size:13px}
+footer{color:#b0b3bd}
+body.dark-mode{background:#11131b;color:#f1f2f7}body.dark-mode .videoWash{background:linear-gradient(180deg,#11131beF,#151722e8 50%,#11131bf5)}body.dark-mode .logo,body.dark-mode h2,body.dark-mode .track-info h3{color:#f4f4fa}body.dark-mode .lyrics-panel,body.dark-mode .library,body.dark-mode .recent-track-list,body.dark-mode .home-feature,body.dark-mode .player-shortcuts button,body.dark-mode .home-add{background:#1b1e29;border-color:#303342;color:#eef0f7}body.dark-mode .recent-meta strong{color:#f1f2f7}body.dark-mode .recent-track{border-color:#303342}body.dark-mode .recent-art,body.dark-mode .feature-icon{background:#29263b;color:#c4b8ff}body.dark-mode .song-info p,body.dark-mode .home-feature small{color:#a4a8b6}body.dark-mode .orbit-control,body.dark-mode .orbit-volume{background:#1b1e29!important;border-color:#343747!important;color:#e5e6ef!important}body.dark-mode .progress{accent-color:#b7a8f4}body.dark-mode .disc{background:linear-gradient(145deg,#444653,#20222c);box-shadow:0 0 0 8px #ffffff12,0 22px 55px #0008}
+@media(max-width:370px){.home-feature-grid{grid-template-columns:1fr}.home-feature{min-height:85px}.player-shortcuts button{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.album-area:before,.album-area:after{animation:none!important}}
+
 </style>
 </head>
 
@@ -496,7 +537,6 @@ body.dark-mode .main-menu-sheet{background:#1b1b24;color:#f4f1f7}body.dark-mode 
 
 <header>
   <div class="logo">SONORA<span>.</span></div>
-  <button class="profile" id="profileButton" type="button" hidden aria-label="Meu perfil">S</button>
   <button class="header-icon main-menu-button" type="button" onclick="toggleMainMenu()" aria-label="Abrir menu" aria-expanded="false" id="mainMenuButton">
     <span></span><span></span><span></span>
   </button>
@@ -554,6 +594,17 @@ body.dark-mode .main-menu-sheet{background:#1b1b24;color:#f4f1f7}body.dark-mode 
   <button type="button" onclick="document.getElementById('files').click()">＋ Adicionar músicas</button>
 </div>
 
+<section class="sonora-home" aria-label="Descubra no SONORA">
+  <div class="home-heading"><div><span class="home-eyebrow">SEU SOM, SEU MOMENTO</span><h2>Descubra sua música</h2></div><button class="home-add" type="button" onclick="document.getElementById('files').click()">＋ Importar</button></div>
+  <div class="home-feature-grid">
+    <button class="home-feature feature-library" type="button" onclick="document.getElementById('artistSearch').focus();document.querySelector('.library').scrollIntoView({behavior:'smooth'})"><span class="feature-icon">♫</span><strong>Sua biblioteca</strong><small>Suas músicas em um só lugar</small></button>
+    <button class="home-feature feature-playlist" type="button" onclick="openFeature('playlistModal')"><span class="feature-icon">▤</span><strong>Suas playlists</strong><small>Crie trilhas para cada momento</small></button>
+    <button class="home-feature feature-ai" type="button" onclick="openFeature('aiModal')"><span class="feature-icon">✧</span><strong>SONORA AI</strong><small>Explore novas possibilidades</small></button>
+  </div>
+  <div class="home-heading home-library-heading"><div><span class="home-eyebrow">OUÇA DE NOVO</span><h2>Adicionadas recentemente</h2></div><span class="home-count" id="homeSongCount">0 faixas</span></div>
+  <div class="recent-track-list" id="recentTracks"><div class="recent-empty">Adicione músicas do seu aparelho para montar sua coleção.</div></div>
+</section>
+
 <section class="lyrics-panel" aria-live="polite">
   <div class="lyrics-heading">
     <div>
@@ -580,7 +631,7 @@ body.dark-mode .main-menu-sheet{background:#1b1b24;color:#f4f1f7}body.dark-mode 
   </div>
 </div>
 
-<footer>SONORA MUSIC EXPERIENCE • 7.0</footer>
+<footer>SONORA MUSIC EXPERIENCE • 8.0</footer>
 
 
 <!-- Painéis SONORA 6.0 -->
@@ -637,7 +688,7 @@ body.dark-mode .main-menu-sheet{background:#1b1b24;color:#f4f1f7}body.dark-mode 
   <div class="update-item"><strong>SONORA 5.0 · Player reorganizado</strong><p>Controles de volume ao redor do visualizador circular e atalhos de playlists na tela de reprodução.</p></div>
   <div class="update-item"><strong>VIP SONORA</strong><p>Temas visuais e ajuste da suavidade da foto de fundo reunidos em um único painel.</p></div>
   <div class="update-item"><strong>Perfil pessoal</strong><p>Agora você pode definir um nome e uma foto para seu perfil.</p></div>
-  <div class="update-item"><strong>SONORA 6.0 · Premium demonstrativo</strong><p>Prévia da assinatura de R$ 20,99/mês, sem cobrança real.</p><div class="update-item"><strong>SONORA 7.0 · Interface renovada</strong><p>Menu superior compacto, estrela VIP redesenhada e animação central aprimorada. Integração de mídia Android em preparação.</p></div><p>Prévia da assinatura de R$ 20,99/mês, sem cobrança real, com apresentação dos benefícios Premium.</p></div><div class="update-item"><strong>SONORA AI · Prévia</strong><p>Nova tela demonstrativa de busca inteligente e recursos offline planejados.</p></div><div class="update-item"><strong>Visual e desempenho</strong><p>Disco de vinil giratório, modo claro/escuro e visualizador mais leve para ajudar na rolagem.</p></div><div class="update-item"><strong>Biblioteca</strong><p>Pesquisa de cantores e músicas continua disponível na biblioteca local.</p></div>
+  <div class="update-item"><strong>SONORA 6.0 · Premium demonstrativo</strong><p>Prévia da assinatura de R$ 20,99/mês, sem cobrança real.</p><div class="update-item"><strong>SONORA 8.0 · White Luxury</strong><p>Nova experiência branca, cartões de acesso rápido, biblioteca recente e identidade visual refinada.</p></div><div class="update-item"><strong>SONORA 7.0 · Interface renovada</strong><p>Menu superior compacto, estrela VIP redesenhada e animação central aprimorada. Integração de mídia Android em preparação.</p></div><p>Prévia da assinatura de R$ 20,99/mês, sem cobrança real, com apresentação dos benefícios Premium.</p></div><div class="update-item"><strong>SONORA AI · Prévia</strong><p>Nova tela demonstrativa de busca inteligente e recursos offline planejados.</p></div><div class="update-item"><strong>Visual e desempenho</strong><p>Disco de vinil giratório, modo claro/escuro e visualizador mais leve para ajudar na rolagem.</p></div><div class="update-item"><strong>Biblioteca</strong><p>Pesquisa de cantores e músicas continua disponível na biblioteca local.</p></div>
  </section>
 </div>
 <input type="file" id="profilePhotoInput" accept="image/*" hidden>
@@ -1206,6 +1257,26 @@ function renderPlaylist() {
     playlist.append(item);
   });
   renderSonoraPlaylists();
+  renderRecentTracks();
+}
+
+function renderRecentTracks(){
+ const host=document.getElementById("recentTracks");
+ const count=document.getElementById("homeSongCount");
+ if(!host||!count)return;
+ count.textContent=songs.length+ (songs.length===1?" faixa":" faixas");
+ host.innerHTML="";
+ if(!songs.length){const empty=document.createElement("div");empty.className="recent-empty";empty.textContent="Adicione músicas do seu aparelho para montar sua coleção.";host.append(empty);return;}
+ songs.slice(-5).reverse().forEach((song,offset)=>{
+  const index=songs.length-1-offset;const meta=identifyTrackFromFilename(song.name);
+  const row=document.createElement("div");row.className="recent-track";
+  const art=document.createElement("div");art.className="recent-art";art.textContent="♫";
+  const info=document.createElement("div");info.className="recent-meta";
+  const title=document.createElement("strong");title.textContent=meta.title||song.name.replace(/\.[^/.]+$/,"");
+  const artist=document.createElement("small");artist.textContent=meta.artist||"Sua biblioteca local";info.append(title,artist);
+  const play=document.createElement("button");play.className="recent-play";play.type="button";play.textContent="▶";play.setAttribute("aria-label","Reproduzir "+title.textContent);play.onclick=()=>{loadSong(index);playLoadedSong();};
+  row.append(art,info,play);host.append(row);
+ });
 }
 
 let sonoraPlaylists = [];
