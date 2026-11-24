@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1005302895795",
+    "project_id": "sonora-music-1f803",
+    "storage_bucket": "sonora-music-1f803.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1005302895795:android:0c40ee13de65ddc0b68cc6",
+        "android_client_info": {
+          "package_name": "com.sonora.music"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1005302895795-h0l7ebe8g951t663vqkpjkld0o8bsvpf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEEzmq-jJdpjLhbDolw_JMXe6Yo_D9Ss8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1005302895795-h0l7ebe8g951t663vqkpjkld0o8bsvpf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
