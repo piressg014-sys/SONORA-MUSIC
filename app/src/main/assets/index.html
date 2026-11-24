@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#ffffff">
-<title>SONORA Music 6.0</title>
+<title>SONORA Music 7.0</title>
 
 <style>
 * {
@@ -453,6 +453,33 @@ body.dark-mode .disc{box-shadow:0 0 0 5px #ffffff20,0 12px 35px #0008,0 0 28px c
 .ai-result{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #eee8f1;font-size:13px}.ai-result small{display:block;color:#999;margin-top:4px}.ai-result button{border:1px solid #e7dced;border-radius:10px;background:#fff;padding:8px;color:#80549a;font-weight:700}
 @media(prefers-reduced-motion:reduce){body.is-playing .vinyl-record{animation-duration:12s}}
 
+
+/* SONORA 7.0 - menu compacto e identidade visual */
+.main-menu-button{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:46px;height:46px;border-radius:15px;background:linear-gradient(145deg,#fff,#f2eef5);box-shadow:0 7px 20px #1d13240f}
+.main-menu-button span{display:block;width:19px;height:2px;border-radius:4px;background:#30283a;transition:transform .2s,opacity .2s}
+.main-menu-backdrop{position:fixed;inset:0;z-index:700;background:#17121f66;display:none;justify-content:flex-end;align-items:flex-start;padding:76px 16px 16px}
+.main-menu-backdrop.open{display:flex}
+.main-menu-sheet{width:min(360px,100%);padding:16px;border-radius:23px;background:#fff;color:#211c26;box-shadow:0 22px 70px #0003;animation:menuIn .18s ease-out}
+@keyframes menuIn{from{opacity:0;transform:translateY(-8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.main-menu-head{display:flex;justify-content:space-between;align-items:center;padding:2px 4px 12px;border-bottom:1px solid #eee9f1;margin-bottom:7px;letter-spacing:1.6px;font-size:11px;color:#94899c}
+.main-menu-head button{border:0;background:#f2eff4;width:30px;height:30px;border-radius:50%;font-size:21px;color:#51475a}
+.main-menu-sheet>button{width:100%;display:flex;align-items:center;gap:12px;padding:12px 7px;border:0;border-bottom:1px solid #f1edf3;background:transparent;text-align:left;color:inherit}
+.main-menu-sheet>button:last-child{border-bottom:0}
+.menu-symbol{width:39px;height:39px;flex:0 0 39px;display:grid;place-items:center;border-radius:13px;background:#f4f0f7;color:#70527f;font-size:20px}
+.menu-symbol.vip-symbol,.premium-star{color:#b78b32;text-shadow:0 1px 8px #d9b75b55}
+.main-menu-sheet b{display:block;font-size:13px}.main-menu-sheet small{display:block;margin-top:3px;color:#978e9e;font-size:11px}.menu-arrow{margin-left:auto;font-size:25px;color:#b2a9b9}
+/* Camadas de energia e equalizador central */
+.album-area:before,.album-area:after{content:"";position:absolute;left:50%;top:50%;width:76%;height:76%;border:1px solid color-mix(in srgb,var(--vip-accent) 42%,transparent);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:0}
+.album-area:before{animation:sonoraPulse 3.4s ease-out infinite}.album-area:after{width:92%;height:92%;animation:sonoraPulse 3.4s ease-out 1.7s infinite}
+@keyframes sonoraPulse{0%{transform:translate(-50%,-50%) scale(.82);opacity:.65}100%{transform:translate(-50%,-50%) scale(1.12);opacity:0}}
+.vinyl-record{position:relative}.vinyl-record:before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid color-mix(in srgb,var(--vip-accent) 75%,white);opacity:.65;pointer-events:none}
+.vinyl-label{background:radial-gradient(circle at 32% 28%,#fff9dc,var(--vip-accent) 52%,#29202d 100%)}
+.vinyl-center{display:flex;align-items:center;justify-content:center;gap:2px;width:24px;height:24px;z-index:1}.vinyl-center i{display:block;width:2px;height:7px;border-radius:3px;background:#fff;box-shadow:0 0 5px #fff8;animation:eqBars .72s ease-in-out infinite alternate}.vinyl-center i:nth-child(2){height:14px;animation-delay:-.3s}.vinyl-center i:nth-child(3){height:19px;animation-delay:-.5s}.vinyl-center i:nth-child(4){height:11px;animation-delay:-.15s}.vinyl-center i:nth-child(5){height:16px;animation-delay:-.4s}
+@keyframes eqBars{from{transform:scaleY(.35)}to{transform:scaleY(1.1)}}body:not(.is-playing) .vinyl-center i{animation-play-state:paused;transform:scaleY(.35)}
+body.is-playing .album-area:before{border-width:2px;box-shadow:0 0 22px color-mix(in srgb,var(--vip-accent) 45%,transparent)}
+body.dark-mode .main-menu-sheet{background:#1b1b24;color:#f4f1f7}body.dark-mode .main-menu-head{border-color:#34313c}body.dark-mode .main-menu-head button,body.dark-mode .menu-symbol{background:#292632;color:#e9d8ff}body.dark-mode .main-menu-sheet>button{border-color:#302d38}body.dark-mode .main-menu-sheet small{color:#aaa1b1}body.dark-mode .main-menu-button{background:#25232d;border-color:#3a3543}body.dark-mode .main-menu-button span{background:#f4f1f7}
+@media(prefers-reduced-motion:reduce){.album-area:before,.album-area:after,.vinyl-center i{animation:none!important}}
+
 </style>
 </head>
 
@@ -469,14 +496,22 @@ body.dark-mode .disc{box-shadow:0 0 0 5px #ffffff20,0 12px 35px #0008,0 0 28px c
 
 <header>
   <div class="logo">SONORA<span>.</span></div>
-  <div class="header-actions">
-    <button class="header-icon" type="button" onclick="openFeature('premiumModal')" aria-label="SONORA Premium">♛</button>
-    <button class="header-icon" type="button" onclick="toggleColorMode()" id="modeToggle" aria-label="Alternar tema claro e escuro">☾</button>
-    <button class="header-icon" type="button" onclick="openFeature('aiModal')" aria-label="SONORA AI">✧</button>
-    <button class="header-icon" type="button" onclick="openFeature('updatesModal')" aria-label="Novidades">◉</button>
-    <button class="profile" id="profileButton" type="button" onclick="openFeature('profileModal')" aria-label="Meu perfil">S</button>
-  </div>
+  <button class="profile" id="profileButton" type="button" hidden aria-label="Meu perfil">S</button>
+  <button class="header-icon main-menu-button" type="button" onclick="toggleMainMenu()" aria-label="Abrir menu" aria-expanded="false" id="mainMenuButton">
+    <span></span><span></span><span></span>
+  </button>
 </header>
+<div class="main-menu-backdrop" id="mainMenuBackdrop" onclick="if(event.target===this)toggleMainMenu(false)">
+  <nav class="main-menu-sheet" aria-label="Menu principal">
+    <div class="main-menu-head"><strong>SONORA MENU</strong><button type="button" onclick="toggleMainMenu(false)" aria-label="Fechar menu">×</button></div>
+    <button onclick="menuOpen('premiumModal')"><span class="menu-symbol vip-symbol">✦</span><span><b>SONORA PREMIUM</b><small>Plano demonstrativo</small></span><span class="menu-arrow">›</span></button>
+    <button onclick="menuOpen('aiModal')"><span class="menu-symbol">✧</span><span><b>SONORA AI</b><small>Busca inteligente</small></span><span class="menu-arrow">›</span></button>
+    <button onclick="menuOpen('vipModal')"><span class="menu-symbol vip-symbol">✧</span><span><b>Temas VIP</b><small>Personalize seu player</small></span><span class="menu-arrow">›</span></button>
+    <button onclick="menuOpen('profileModal')"><span class="menu-symbol">◉</span><span><b>Meu perfil</b><small>Foto e identificação</small></span><span class="menu-arrow">›</span></button>
+    <button onclick="menuOpen('updatesModal')"><span class="menu-symbol">✧</span><span><b>Novidades</b><small>Veja o que mudou</small></span><span class="menu-arrow">›</span></button>
+    <button onclick="toggleColorMode();toggleMainMenu(false)"><span class="menu-symbol" id="menuModeIcon">☾</span><span><b>Modo claro / escuro</b><small>Trocar aparência</small></span><span class="menu-arrow">›</span></button>
+  </nav>
+</div>
 
 <p class="subtitle">SEU UNIVERSO MUSICAL</p>
 <h2>Reproduzindo agora</h2>
@@ -489,7 +524,7 @@ body.dark-mode .disc{box-shadow:0 0 0 5px #ffffff20,0 12px 35px #0008,0 0 28px c
   <div class="orbit-volume"><span>VOL</span><input id="orbitVolumeSlider" type="range" min="0" max="100" value="100" aria-label="Volume da música"><span id="orbitVolumePercent">100%</span></div>
   <div class="disc">
     <div class="cover vinyl-record" id="vinylRecord" aria-label="Disco de vinil SONORA giratório">
-      <div class="vinyl-grooves"></div><div class="vinyl-label"><span class="vinyl-center">SONORA</span><img id="artwork" hidden alt="Capa da música"></div>
+      <div class="vinyl-grooves"></div><div class="vinyl-label"><span class="vinyl-center" aria-label="Equalizador animado"><i></i><i></i><i></i><i></i><i></i></span><img id="artwork" hidden alt="Capa da música"></div>
     </div>
   </div>
 </div>
@@ -545,14 +580,14 @@ body.dark-mode .disc{box-shadow:0 0 0 5px #ffffff20,0 12px 35px #0008,0 0 28px c
   </div>
 </div>
 
-<footer>SONORA MUSIC EXPERIENCE • 6.0</footer>
+<footer>SONORA MUSIC EXPERIENCE • 7.0</footer>
 
 
 <!-- Painéis SONORA 6.0 -->
 <div class="feature-modal" id="premiumModal" onclick="if(event.target===this)closeFeature('premiumModal')"><section class="modal-sheet">
- <div class="modal-head"><h3>♛ SONORA PREMIUM</h3><button class="modal-close" onclick="closeFeature('premiumModal')">×</button></div>
+ <div class="modal-head"><h3><span class="premium-star">✦</span> SONORA PREMIUM</h3><button class="modal-close" onclick="closeFeature('premiumModal')">×</button></div>
  <div class="premium-hero"><span class="demo-tag">MODO DEMONSTRAÇÃO · SEM COBRANÇA</span><div style="font-size:22px;font-weight:900">Sua música. Sem limites.</div><div class="premium-price">R$ 20,99 <span style="font-size:13px;font-weight:500">/ mês</span></div><div style="font-size:12px;opacity:.8">Prévia do plano mensal SONORA</div></div>
- <div class="premium-benefit">✧ Busca inteligente SONORA AI</div><div class="premium-benefit">↓ Experiência de músicas offline</div><div class="premium-benefit">♛ Todos os temas VIP e personalização</div><div class="premium-benefit">◉ Sem anúncios na experiência Premium</div><div class="premium-benefit">♫ Catálogo musical online ilimitado (prévia)</div>
+ <div class="premium-benefit">✧ Busca inteligente SONORA AI</div><div class="premium-benefit">↓ Experiência de músicas offline</div><div class="premium-benefit"><span class="premium-star">✦</span> Todos os temas VIP e personalização</div><div class="premium-benefit">◉ Sem anúncios na experiência Premium</div><div class="premium-benefit">♫ Catálogo musical online ilimitado (prévia)</div>
  <p class="modal-copy" style="margin:14px 0 8px">Esta ativação é apenas demonstrativa. Nenhum pagamento será solicitado ou realizado. Catálogo online e downloads licenciados serão conectados futuramente.</p>
  <div class="modal-row" style="margin-top:12px"><button class="modal-secondary" style="flex:1" onclick="closeFeature('premiumModal');openFeature('vipModal')">Ver temas VIP</button><button class="modal-action" style="flex:1" onclick="activatePremiumDemo()">Ativar demonstração</button></div><div id="premiumDemoStatus" class="premium-status">✓ Premium demonstrativo ativado neste aparelho. Nenhuma cobrança foi feita.</div>
  </section></div>
@@ -572,7 +607,7 @@ body.dark-mode .disc{box-shadow:0 0 0 5px #ffffff20,0 12px 35px #0008,0 0 28px c
 </div>
 <div class="feature-modal" id="vipModal" onclick="if(event.target===this)closeFeature('vipModal')">
  <section class="modal-sheet">
-  <div class="modal-head"><h3>✦ VIP SONORA</h3><button class="modal-close" onclick="closeFeature('vipModal')">×</button></div>
+  <div class="modal-head"><h3><span class="premium-star">✦</span> VIP SONORA</h3><button class="modal-close" onclick="closeFeature('vipModal')">×</button></div>
   <p class="modal-copy">Escolha o acabamento visual do seu player.</p>
   <div class="vip-grid">
    <button class="vip-theme" type="button" data-theme="gold" onclick="applyVipTheme('gold')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff1b8,#b98222,#fff0b0)"></span>GOLD VIP</button>
@@ -602,7 +637,7 @@ body.dark-mode .disc{box-shadow:0 0 0 5px #ffffff20,0 12px 35px #0008,0 0 28px c
   <div class="update-item"><strong>SONORA 5.0 · Player reorganizado</strong><p>Controles de volume ao redor do visualizador circular e atalhos de playlists na tela de reprodução.</p></div>
   <div class="update-item"><strong>VIP SONORA</strong><p>Temas visuais e ajuste da suavidade da foto de fundo reunidos em um único painel.</p></div>
   <div class="update-item"><strong>Perfil pessoal</strong><p>Agora você pode definir um nome e uma foto para seu perfil.</p></div>
-  <div class="update-item"><strong>SONORA 6.0 · Premium demonstrativo</strong><p>Prévia da assinatura de R$ 20,99/mês, sem cobrança real, com apresentação dos benefícios Premium.</p></div><div class="update-item"><strong>SONORA AI · Prévia</strong><p>Nova tela demonstrativa de busca inteligente e recursos offline planejados.</p></div><div class="update-item"><strong>Visual e desempenho</strong><p>Disco de vinil giratório, modo claro/escuro e visualizador mais leve para ajudar na rolagem.</p></div><div class="update-item"><strong>Biblioteca</strong><p>Pesquisa de cantores e músicas continua disponível na biblioteca local.</p></div>
+  <div class="update-item"><strong>SONORA 6.0 · Premium demonstrativo</strong><p>Prévia da assinatura de R$ 20,99/mês, sem cobrança real.</p><div class="update-item"><strong>SONORA 7.0 · Interface renovada</strong><p>Menu superior compacto, estrela VIP redesenhada e animação central aprimorada. Integração de mídia Android em preparação.</p></div><p>Prévia da assinatura de R$ 20,99/mês, sem cobrança real, com apresentação dos benefícios Premium.</p></div><div class="update-item"><strong>SONORA AI · Prévia</strong><p>Nova tela demonstrativa de busca inteligente e recursos offline planejados.</p></div><div class="update-item"><strong>Visual e desempenho</strong><p>Disco de vinil giratório, modo claro/escuro e visualizador mais leve para ajudar na rolagem.</p></div><div class="update-item"><strong>Biblioteca</strong><p>Pesquisa de cantores e músicas continua disponível na biblioteca local.</p></div>
  </section>
 </div>
 <input type="file" id="profilePhotoInput" accept="image/*" hidden>
@@ -612,6 +647,27 @@ body.dark-mode .disc{box-shadow:0 0 0 5px #ffffff20,0 12px 35px #0008,0 0 28px c
 </div>
 
 <script>
+function toggleMainMenu(force){
+ const backdrop=document.getElementById("mainMenuBackdrop");
+ const button=document.getElementById("mainMenuButton");
+ const open=typeof force==="boolean"?force:!backdrop.classList.contains("open");
+ backdrop.classList.toggle("open",open);button.setAttribute("aria-expanded",String(open));
+}
+function menuOpen(id){toggleMainMenu(false);openFeature(id);}
+function notifyNativePlayback(){
+ try{if(window.SonoraBridge&&typeof window.SonoraBridge.updatePlayback==="function"){
+  const title=document.getElementById("title")?.textContent||"SONORA MUSIC";
+  const artist=document.getElementById("artist")?.textContent||"Sua biblioteca";
+  window.SonoraBridge.updatePlayback(title,artist,Math.floor(audio.duration||0),!audio.paused);
+ }}catch(e){}
+}
+window.sonoraMediaAction=function(action){
+ if(action==="play"){if(audio.src)audio.play().catch(()=>{});else togglePlay();}
+ else if(action==="pause"){audio.pause();}
+ else if(action==="next"){nextSong();}
+ else if(action==="previous"){previousSong();}
+};
+
 const audio = document.getElementById("audio");
 const files = document.getElementById("files");
 const artistPhotoFiles = document.getElementById("artistPhotoFiles");
@@ -932,6 +988,7 @@ function loadSong(index) {
     meta.artist || "Sua biblioteca SONORA";
 
   document.getElementById("play").textContent = "▶";
+  notifyNativePlayback();
 
   if (song.art) {
     const artwork = document.getElementById("artwork");
@@ -965,11 +1022,13 @@ audio.addEventListener("play", () => {
   document.body.classList.add("is-playing");
   document.getElementById("play").textContent = "Ⅱ";
   startVisualizer();
+  notifyNativePlayback();
 });
 
 audio.addEventListener("pause", () => {
   document.body.classList.remove("is-playing");
   document.getElementById("play").textContent = "▶";
+  notifyNativePlayback();
   if (animationFrame) cancelAnimationFrame(animationFrame);
   animationFrame = null;
   drawVisualizer();
@@ -990,6 +1049,7 @@ audio.addEventListener("timeupdate", () => {
 audio.addEventListener("loadedmetadata", () => {
   document.getElementById("duration").textContent =
     formatTime(audio.duration);
+  notifyNativePlayback();
 });
 
 document.getElementById("progress").addEventListener("input", e => {
@@ -1248,7 +1308,7 @@ function toggleColorMode(){
  document.getElementById("modeToggle").textContent=dark?"☀":"☾";
  try{localStorage.setItem("sonoraColorMode",dark?"dark":"light");}catch(e){}
 }
-try{if(localStorage.getItem("sonoraColorMode")==="dark"){document.body.classList.add("dark-mode");document.getElementById("modeToggle").textContent="☀";}}catch(e){}
+try{if(localStorage.getItem("sonoraColorMode")==="dark"){document.body.classList.add("dark-mode");const m=document.getElementById("modeToggle");if(m)m.textContent="☀";const mm=document.getElementById("menuModeIcon");if(mm)mm.textContent="☀";}}catch(e){}
 function activatePremiumDemo(){
  try{localStorage.setItem("sonoraPremiumDemo","active");}catch(e){}
  document.getElementById("premiumDemoStatus").style.display="block";
