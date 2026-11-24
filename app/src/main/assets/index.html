@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#ffffff">
-<title>SONORA Music 3.5</title>
+<title>SONORA Music 4.0</title>
 
 <style>
 * {
@@ -365,10 +365,48 @@ footer {
   letter-spacing: 3px;
   margin-top: 40px;
 }
+
+
+/* SONORA 4.0: início, busca, playlists e temas VIP */
+:root { --vip-accent:#b58bd5; --vip-bg:#fafafa; --vip-ink:#171717; }
+body { background:var(--vip-bg); color:var(--vip-ink); transition:background .25s,color .25s; }
+.splash-screen { position:fixed; inset:0; z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:15px; padding:30px; background:linear-gradient(145deg,#fff,#f4f0f8); color:#17151d; text-align:center; transition:opacity .35s, visibility .35s; }
+.splash-screen.hide { opacity:0; visibility:hidden; pointer-events:none; }
+.splash-mark { width:82px; height:82px; display:grid; place-items:center; border-radius:25px; background:#17151d; color:#fff; font-size:36px; box-shadow:0 15px 38px #17151d24; }
+.splash-title { font-size:29px; font-weight:900; letter-spacing:5px; }
+.splash-sub { color:#827b89; font-size:11px; letter-spacing:3px; }
+.splash-enter { margin-top:30px; border:0; border-radius:30px; padding:15px 48px; background:#17151d; color:#fff; font-weight:800; letter-spacing:2px; box-shadow:0 9px 25px #17151d25; }
+.feature-panel { margin:18px 0; padding:17px; border:1px solid #eee6f2; border-radius:20px; background:#ffffffc9; box-shadow:0 8px 24px #6048790a; }
+.feature-title { font-size:16px; font-weight:800; margin-bottom:12px; }
+.artist-search { width:100%; border:1px solid #e8e1ec; border-radius:14px; padding:13px 14px; background:#fff; font-size:14px; outline:none; }
+.artist-search:focus { border-color:var(--vip-accent); box-shadow:0 0 0 3px color-mix(in srgb,var(--vip-accent) 18%,transparent); }
+.playlist-create { display:flex; gap:8px; }
+.playlist-create input { flex:1; min-width:0; border:1px solid #e8e1ec; border-radius:12px; padding:11px; }
+.feature-btn { border:0; border-radius:12px; padding:11px 14px; background:#17151d; color:white; font-weight:700; }
+.playlist-chip { display:inline-flex; align-items:center; gap:7px; margin:8px 6px 0 0; border:1px solid #e8e1ec; border-radius:20px; padding:8px 12px; background:#fff; color:#51475a; font-size:12px; }
+.playlist-chip.active { background:#f1e8f7; border-color:var(--vip-accent); color:#76518f; }
+.vip-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; }
+.vip-theme { min-height:94px; border:1px solid #e9e2ed; border-radius:15px; padding:10px 6px; display:flex; flex-direction:column; justify-content:center; align-items:center; gap:8px; font-size:11px; font-weight:800; background:#fff; color:#3a3340; }
+.vip-swatch { width:34px; height:34px; border-radius:50%; box-shadow:0 4px 12px #0002; }
+.vip-theme.selected { outline:2px solid var(--vip-accent); outline-offset:2px; }
+.song-add { border:1px solid #e9e1ee!important; border-radius:10px; padding:7px 10px!important; color:#875da3!important; font-size:12px!important; }
+.song.playing { background:#f8f2fb; border-radius:12px; padding-left:8px; }
+body.vip-gold { --vip-accent:#c59a38; --vip-bg:#fffaf0; --vip-ink:#342714; }
+body.vip-aurora { --vip-accent:#55a99e; --vip-bg:#f1fbfa; --vip-ink:#153b3b; }
+body.vip-diamond { --vip-accent:#8c9bc5; --vip-bg:#f5f7fc; --vip-ink:#20283d; }
+body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
+@media(max-width:360px){ .vip-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
+
 </style>
 </head>
 
 <body>
+<div class="splash-screen" id="splashScreen">
+  <div class="splash-mark">♫</div>
+  <div class="splash-title">SONORA</div>
+  <div class="splash-sub">MUSIC • SUA EXPERIÊNCIA</div>
+  <button class="splash-enter" type="button" onclick="enterSonora()">ENTRAR</button>
+</div>
 <img id="artistBackdrop" alt="Foto do artista ao fundo">
 <div class="videoWash"></div>
 <div class="app">
@@ -380,6 +418,12 @@ footer {
 
 <p class="subtitle">SEU UNIVERSO MUSICAL</p>
 <h2>Reproduzindo agora</h2>
+
+<section class="feature-panel">
+  <div class="feature-title">⌕ Buscar cantor ou música</div>
+  <input id="artistSearch" class="artist-search" type="search" placeholder="Digite o nome do cantor..." oninput="renderPlaylist()">
+  <p style="color:#999;font-size:10px;margin-top:8px">Pesquisa nas músicas que você adicionou à sua biblioteca.</p>
+</section>
 
 <div class="album-area">
   <canvas id="visualizer" aria-label="Visualizador circular de áudio"></canvas>
@@ -455,6 +499,30 @@ footer {
 <input type="file" id="files" accept="audio/*" multiple hidden>
 <input type="file" id="artistPhotoFiles" accept="image/*" hidden>
 
+<section class="feature-panel" id="playlistManager">
+  <div class="feature-title">＋ Minhas playlists</div>
+  <div class="playlist-create">
+    <input id="newPlaylistName" type="text" maxlength="32" placeholder="Nome da playlist">
+    <button class="feature-btn" type="button" onclick="createSonoraPlaylist()">Criar</button>
+  </div>
+  <div id="playlistChips"></div>
+  <p id="playlistHint" style="color:#999;font-size:11px;margin-top:10px">Crie uma playlist e use “＋ Playlist” ao lado das músicas para adicionar faixas.</p>
+  <div id="selectedPlaylistSongs" style="margin-top:8px"></div>
+</section>
+
+<section class="feature-panel" id="vipThemes">
+  <div class="feature-title">✦ VIP SONORA</div>
+  <p style="color:#928a98;font-size:11px;margin:-4px 0 13px">Escolha um acabamento especial para seu player.</p>
+  <div class="vip-grid">
+    <button class="vip-theme" type="button" data-theme="gold" onclick="applyVipTheme('gold')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff1b8,#b98222,#fff0b0)"></span>GOLD VIP</button>
+    <button class="vip-theme" type="button" data-theme="aurora" onclick="applyVipTheme('aurora')"><span class="vip-swatch" style="background:linear-gradient(135deg,#b6fff0,#268f87,#d5fff7)"></span>AURORA</button>
+    <button class="vip-theme" type="button" data-theme="diamond" onclick="applyVipTheme('diamond')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff,#91a6d8,#e5edff)"></span>DIAMOND</button>
+    <button class="vip-theme" type="button" data-theme="rose" onclick="applyVipTheme('rose')"><span class="vip-swatch" style="background:linear-gradient(135deg,#ffe0ed,#c05b89,#fff0f6)"></span>ROSE GOLD</button>
+    <button class="vip-theme" type="button" data-theme="default" onclick="applyVipTheme('default')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff,#aaa,#eee)"></span>ORIGINAL</button>
+  </div>
+  <p style="color:#aaa;font-size:9px;margin-top:12px">Temas visuais disponíveis gratuitamente nesta versão.</p>
+</section>
+
 <div class="library">
   <h3>Minha biblioteca</h3>
   <div id="playlist">
@@ -464,7 +532,7 @@ footer {
   </div>
 </div>
 
-<footer>SONORA MUSIC EXPERIENCE • 3.5</footer>
+<footer>SONORA MUSIC EXPERIENCE • 4.0</footer>
 
 <audio id="audio"></audio>
 
@@ -957,38 +1025,110 @@ files.addEventListener("change", e => {
 
 function renderPlaylist() {
   playlist.innerHTML = "";
+  const query = (document.getElementById("artistSearch")?.value || "").trim().toLocaleLowerCase("pt-BR");
+  const visibleSongs = songs.map((song,index) => ({song,index,meta:identifyTrackFromFilename(song.name)}))
+    .filter(item => !query || (item.song.name + " " + item.meta.artist + " " + item.meta.title).toLocaleLowerCase("pt-BR").includes(query));
 
-  songs.forEach((song,index) => {
+  if (!visibleSongs.length) {
+    const empty = document.createElement("p");
+    empty.style.cssText = "color:#999;font-size:13px;padding:10px 0";
+    empty.textContent = songs.length ? "Nenhum cantor ou música encontrado." : "Suas músicas aparecerão aqui.";
+    playlist.append(empty);
+  }
+
+  visibleSongs.forEach(({song,index,meta}) => {
     const item = document.createElement("div");
-    item.className = "song";
-
+    item.className = "song" + (index === currentIndex ? " playing" : "");
     const cover = document.createElement("div");
     cover.className = "song-cover";
     cover.textContent = "♫";
-
     const info = document.createElement("div");
     info.className = "song-info";
-
     const name = document.createElement("strong");
-    name.textContent = song.name.replace(/\.[^/.]+$/, "");
-
+    name.textContent = meta.title || song.name.replace(/\.[^/.]+$/, "");
     const artist = document.createElement("p");
-    const meta = identifyTrackFromFilename(song.name);
     artist.textContent = meta.artist || "Arquivo local";
-
     info.append(name,artist);
-
-    const button = document.createElement("button");
-    button.textContent = "▶";
-    button.onclick = () => {
-      loadSong(index);
-      playLoadedSong();
-    };
-
-    item.append(cover,info,button);
+    const playButton = document.createElement("button");
+    playButton.textContent = "▶";
+    playButton.setAttribute("aria-label","Reproduzir música");
+    playButton.onclick = () => { loadSong(index); playLoadedSong(); };
+    const addButton = document.createElement("button");
+    addButton.className = "song-add";
+    addButton.textContent = "＋ Playlist";
+    addButton.onclick = () => addSongToSonoraPlaylist(index);
+    item.append(cover,info,addButton,playButton);
     playlist.append(item);
   });
+  renderSonoraPlaylists();
 }
+
+let sonoraPlaylists = [];
+let activeSonoraPlaylist = -1;
+function enterSonora() {
+  document.getElementById("splashScreen").classList.add("hide");
+}
+function createSonoraPlaylist() {
+  const input = document.getElementById("newPlaylistName");
+  const name = input.value.trim();
+  if (!name) { input.focus(); return; }
+  sonoraPlaylists.push({name, songIndexes:[]});
+  activeSonoraPlaylist = sonoraPlaylists.length - 1;
+  input.value = "";
+  renderSonoraPlaylists();
+}
+function addSongToSonoraPlaylist(index) {
+  if (!sonoraPlaylists.length) {
+    document.getElementById("newPlaylistName").focus();
+    document.getElementById("playlistHint").textContent = "Primeiro crie uma playlist acima. Depois toque em ＋ Playlist na música desejada.";
+    return;
+  }
+  const target = activeSonoraPlaylist >= 0 ? activeSonoraPlaylist : 0;
+  if (!sonoraPlaylists[target].songIndexes.includes(index)) sonoraPlaylists[target].songIndexes.push(index);
+  activeSonoraPlaylist = target;
+  renderSonoraPlaylists();
+}
+function renderSonoraPlaylists() {
+  const chips = document.getElementById("playlistChips");
+  const selected = document.getElementById("selectedPlaylistSongs");
+  if (!chips || !selected) return;
+  chips.innerHTML = "";
+  sonoraPlaylists.forEach((pl,index) => {
+    const chip = document.createElement("button");
+    chip.className = "playlist-chip" + (index === activeSonoraPlaylist ? " active" : "");
+    chip.textContent = "♫ " + pl.name + " (" + pl.songIndexes.length + ")";
+    chip.onclick = () => { activeSonoraPlaylist = index; renderSonoraPlaylists(); };
+    chips.append(chip);
+  });
+  selected.innerHTML = "";
+  if (activeSonoraPlaylist < 0 || !sonoraPlaylists[activeSonoraPlaylist]) return;
+  const pl = sonoraPlaylists[activeSonoraPlaylist];
+  const heading = document.createElement("p");
+  heading.style.cssText = "font-size:12px;font-weight:700;margin:10px 0";
+  heading.textContent = "Faixas em " + pl.name;
+  selected.append(heading);
+  pl.songIndexes.forEach(songIndex => {
+    const song = songs[songIndex];
+    if (!song) return;
+    const line = document.createElement("div");
+    line.style.cssText = "display:flex;justify-content:space-between;align-items:center;padding:7px 0;font-size:12px;border-bottom:1px solid #f0ebf2";
+    const label = document.createElement("span");
+    label.textContent = identifyTrackFromFilename(song.name).title;
+    const play = document.createElement("button");
+    play.textContent = "▶";
+    play.onclick = () => { loadSong(songIndex); playLoadedSong(); };
+    line.append(label,play);
+    selected.append(line);
+  });
+}
+function applyVipTheme(theme) {
+  document.body.classList.remove("vip-gold","vip-aurora","vip-diamond","vip-rose");
+  if (theme !== "default") document.body.classList.add("vip-" + theme);
+  document.querySelectorAll(".vip-theme").forEach(button => button.classList.toggle("selected",button.dataset.theme === theme));
+  try { localStorage.setItem("sonoraVipTheme",theme); } catch(e) {}
+}
+try { applyVipTheme(localStorage.getItem("sonoraVipTheme") || "default"); } catch(e) { applyVipTheme("default"); }
+
 
 resizeVisualizer();
 updateVolumeUI();
