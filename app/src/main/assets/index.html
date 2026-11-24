@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#ffffff">
-<title>SONORA Music 4.0</title>
+<title>SONORA Music 5.0</title>
 
 <style>
 * {
@@ -397,6 +397,40 @@ body.vip-diamond { --vip-accent:#8c9bc5; --vip-bg:#f5f7fc; --vip-ink:#20283d; }
 body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
 @media(max-width:360px){ .vip-grid{grid-template-columns:repeat(2,minmax(0,1fr));} }
 
+
+/* SONORA 5.0 - painéis organizados e controles orbitais */
+.header-actions{display:flex;align-items:center;gap:10px}
+.header-icon{width:42px;height:42px;border:1px solid #eee;border-radius:50%;background:#fff;color:#29232f;font-size:20px;box-shadow:0 5px 15px #0000000b}
+.profile{overflow:hidden;cursor:pointer;border:1px solid #e8e1ec;font-size:17px}
+.profile img{width:100%;height:100%;object-fit:cover}
+.album-area{overflow:visible}
+.orbit-control{position:absolute;z-index:5;width:38px;height:38px;border-radius:50%;border:1px solid #ffffffd9;background:#ffffffdf;color:#6f527f;box-shadow:0 5px 18px #60487925;font-size:18px;display:grid;place-items:center;backdrop-filter:blur(10px)}
+.orbit-minus{left:3%;top:48%}.orbit-plus{right:3%;top:48%}.orbit-mute{top:4%;right:20%;font-size:15px}
+.orbit-volume{position:absolute;z-index:5;left:18%;right:18%;bottom:1%;height:28px;display:flex;align-items:center;gap:8px;padding:5px 11px;border:1px solid #ffffffdd;border-radius:20px;background:#ffffffdf;box-shadow:0 5px 18px #60487920;backdrop-filter:blur(10px)}
+.orbit-volume input{width:100%;min-width:0;accent-color:var(--vip-accent)}
+.orbit-volume span{font-size:10px;color:#776b80;white-space:nowrap}
+.player-shortcuts{display:flex;justify-content:center;gap:10px;margin:5px 0 20px;flex-wrap:wrap}
+.player-shortcuts button{border:1px solid #eae4ed;border-radius:22px;background:#fff;padding:10px 16px;color:#51475a;font-size:12px;font-weight:700}
+#playlistManager,#vipThemes{display:none!important}
+.feature-modal{position:fixed;inset:0;z-index:500;display:none;align-items:flex-end;justify-content:center;background:#17121f66;padding:18px}
+.feature-modal.open{display:flex}
+.modal-sheet{width:min(480px,100%);max-height:86vh;overflow:auto;border-radius:26px 26px 20px 20px;padding:22px;background:#fff;color:#211c26;box-shadow:0 20px 70px #0003;animation:sheetIn .2s ease-out}
+@keyframes sheetIn{from{transform:translateY(25px);opacity:.5}to{transform:translateY(0);opacity:1}}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.modal-head h3{font-size:20px}.modal-close{width:34px;height:34px;border:0;border-radius:50%;background:#f1edf3;font-size:22px;color:#51475a}
+.modal-copy{color:#918896;font-size:12px;line-height:1.5;margin:-6px 0 15px}
+.profile-preview{display:flex;align-items:center;gap:14px;margin:12px 0 18px}
+.profile-large{width:72px;height:72px;border-radius:50%;background:#eee8f2;display:grid;place-items:center;overflow:hidden;font-size:27px;font-weight:800;color:#8b6a9d}
+.profile-large img{width:100%;height:100%;object-fit:cover}
+.modal-field{width:100%;border:1px solid #e8e1ec;border-radius:13px;padding:13px;margin:7px 0 12px;font-size:14px;background:#fff;color:#29232f}
+.modal-action{border:0;border-radius:13px;padding:12px 16px;background:#17151d;color:white;font-weight:700}
+.modal-secondary{border:1px solid #e9e1ee;border-radius:13px;padding:11px 14px;background:#fff;color:#665570;font-weight:700}
+.modal-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vip-photo-box{margin-top:18px;padding:15px;border:1px solid #eee6f2;border-radius:17px;background:#fcfafd}
+.vip-photo-box .photo-strength{margin:12px 0 0}
+.update-item{padding:13px 0;border-bottom:1px solid #f0ebf2}.update-item strong{font-size:13px}.update-item p{font-size:12px;color:#918896;margin-top:5px;line-height:1.5}
+@media(max-width:360px){.orbit-control{width:33px;height:33px}.orbit-volume{left:15%;right:15%}.header-icon{width:38px;height:38px}}
+
 </style>
 </head>
 
@@ -413,20 +447,22 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
 
 <header>
   <div class="logo">SONORA<span>.</span></div>
-  <div class="profile">S</div>
+  <div class="header-actions">
+    <button class="header-icon" type="button" onclick="openFeature('vipModal')" aria-label="VIP SONORA">✦</button>
+    <button class="header-icon" type="button" onclick="openFeature('updatesModal')" aria-label="Novidades">◉</button>
+    <button class="profile" id="profileButton" type="button" onclick="openFeature('profileModal')" aria-label="Meu perfil">S</button>
+  </div>
 </header>
 
 <p class="subtitle">SEU UNIVERSO MUSICAL</p>
 <h2>Reproduzindo agora</h2>
 
-<section class="feature-panel">
-  <div class="feature-title">⌕ Buscar cantor ou música</div>
-  <input id="artistSearch" class="artist-search" type="search" placeholder="Digite o nome do cantor..." oninput="renderPlaylist()">
-  <p style="color:#999;font-size:10px;margin-top:8px">Pesquisa nas músicas que você adicionou à sua biblioteca.</p>
-</section>
-
 <div class="album-area">
   <canvas id="visualizer" aria-label="Visualizador circular de áudio"></canvas>
+  <button class="orbit-control orbit-minus" type="button" onclick="adjustVolume(-0.1)" aria-label="Diminuir volume">−</button>
+  <button class="orbit-control orbit-plus" type="button" onclick="adjustVolume(0.1)" aria-label="Aumentar volume">+</button>
+  <button class="orbit-control orbit-mute" type="button" id="orbitMute" onclick="toggleMute()" aria-label="Silenciar">♫</button>
+  <div class="orbit-volume"><span>VOL</span><input id="orbitVolumeSlider" type="range" min="0" max="100" value="100" aria-label="Volume da música"><span id="orbitVolumePercent">100%</span></div>
   <div class="disc">
     <div class="cover">
       <span class="cover-text">S</span>
@@ -454,6 +490,10 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
   <button class="play" id="play" onclick="togglePlay()">▶</button>
   <button onclick="nextSong()">⏭</button>
 </div>
+<div class="player-shortcuts">
+  <button type="button" onclick="openFeature('playlistModal')">♫ Minhas playlists</button>
+  <button type="button" onclick="document.getElementById('files').click()">＋ Adicionar músicas</button>
+</div>
 
 <section class="lyrics-panel" aria-live="polite">
   <div class="lyrics-heading">
@@ -468,63 +508,12 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
   <p class="lyrics-credit">Letras fornecidas pela base comunitária LRCLIB. A disponibilidade varia conforme a música.</p>
 </section>
 
-<div class="options">
-  <button onclick="document.getElementById('files').click()">
-    ＋ Adicionar músicas
-  </button>
-  <button id="volumeToggle" class="volume-trigger" type="button" aria-expanded="false" onclick="toggleVolumePanel()">♫ Áudio</button>
-</div>
-
-<div id="volumePanel" class="volume-panel" hidden aria-label="Controle de volume">
-  <div class="volume-panel-head">
-    <div><span class="volume-eyebrow">SONORA SOUND</span><strong>Controle de áudio</strong></div>
-    <button class="volume-close" type="button" onclick="toggleVolumePanel(false)" aria-label="Fechar">×</button>
-  </div>
-  <div class="volume-value-row"><span>Volume</span><strong id="volumePercent">100%</strong></div>
-  <input id="volumeSlider" type="range" min="0" max="100" value="100" aria-label="Volume">
-  <div class="volume-panel-foot"><span>0</span><button id="muteButton" type="button" onclick="toggleMute()">Silenciar</button><span>100</span></div>
-</div>
-
-<div class="options" style="justify-content:center;margin-top:-16px">
-  <button onclick="document.getElementById('artistPhotoFiles').click()">▧ Adicionar foto do artista</button>
-  <button onclick="removeArtistPhoto()">Remover foto</button>
-</div>
-<p class="video-note" id="photoStatus">A foto do artista ficará suavemente mesclada ao fundo branco.</p>
-<div class="photo-strength">
-  <span>Suave</span>
-  <input id="photoOpacity" type="range" min="8" max="38" value="23" aria-label="Intensidade da foto de fundo">
-  <span>Destaque</span>
-</div>
-
 <input type="file" id="files" accept="audio/*" multiple hidden>
 <input type="file" id="artistPhotoFiles" accept="image/*" hidden>
 
-<section class="feature-panel" id="playlistManager">
-  <div class="feature-title">＋ Minhas playlists</div>
-  <div class="playlist-create">
-    <input id="newPlaylistName" type="text" maxlength="32" placeholder="Nome da playlist">
-    <button class="feature-btn" type="button" onclick="createSonoraPlaylist()">Criar</button>
-  </div>
-  <div id="playlistChips"></div>
-  <p id="playlistHint" style="color:#999;font-size:11px;margin-top:10px">Crie uma playlist e use “＋ Playlist” ao lado das músicas para adicionar faixas.</p>
-  <div id="selectedPlaylistSongs" style="margin-top:8px"></div>
-</section>
-
-<section class="feature-panel" id="vipThemes">
-  <div class="feature-title">✦ VIP SONORA</div>
-  <p style="color:#928a98;font-size:11px;margin:-4px 0 13px">Escolha um acabamento especial para seu player.</p>
-  <div class="vip-grid">
-    <button class="vip-theme" type="button" data-theme="gold" onclick="applyVipTheme('gold')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff1b8,#b98222,#fff0b0)"></span>GOLD VIP</button>
-    <button class="vip-theme" type="button" data-theme="aurora" onclick="applyVipTheme('aurora')"><span class="vip-swatch" style="background:linear-gradient(135deg,#b6fff0,#268f87,#d5fff7)"></span>AURORA</button>
-    <button class="vip-theme" type="button" data-theme="diamond" onclick="applyVipTheme('diamond')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff,#91a6d8,#e5edff)"></span>DIAMOND</button>
-    <button class="vip-theme" type="button" data-theme="rose" onclick="applyVipTheme('rose')"><span class="vip-swatch" style="background:linear-gradient(135deg,#ffe0ed,#c05b89,#fff0f6)"></span>ROSE GOLD</button>
-    <button class="vip-theme" type="button" data-theme="default" onclick="applyVipTheme('default')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff,#aaa,#eee)"></span>ORIGINAL</button>
-  </div>
-  <p style="color:#aaa;font-size:9px;margin-top:12px">Temas visuais disponíveis gratuitamente nesta versão.</p>
-</section>
-
 <div class="library">
   <h3>Minha biblioteca</h3>
+  <input id="artistSearch" class="artist-search" type="search" placeholder="Buscar cantor ou música..." oninput="renderPlaylist()" style="margin:0 0 12px">
   <div id="playlist">
     <p style="color:#999;font-size:13px">
       Suas músicas aparecerão aqui.
@@ -532,7 +521,54 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
   </div>
 </div>
 
-<footer>SONORA MUSIC EXPERIENCE • 4.0</footer>
+<footer>SONORA MUSIC EXPERIENCE • 5.0</footer>
+
+
+<!-- Painéis do SONORA 5.0 -->
+<div class="feature-modal" id="playlistModal" onclick="if(event.target===this)closeFeature('playlistModal')">
+ <section class="modal-sheet">
+  <div class="modal-head"><h3>♫ Minhas playlists</h3><button class="modal-close" onclick="closeFeature('playlistModal')">×</button></div>
+  <p class="modal-copy">Crie suas coleções e adicione músicas pela biblioteca.</p>
+  <div class="playlist-create"><input id="newPlaylistName" class="modal-field" type="text" maxlength="32" placeholder="Nome da playlist"><button class="modal-action" type="button" onclick="createSonoraPlaylist()">Criar</button></div>
+  <div id="playlistChips"></div><p id="playlistHint" class="modal-copy" style="margin-top:12px">Escolha uma playlist e use “＋ Playlist” ao lado de uma música.</p><div id="selectedPlaylistSongs"></div>
+ </section>
+</div>
+<div class="feature-modal" id="vipModal" onclick="if(event.target===this)closeFeature('vipModal')">
+ <section class="modal-sheet">
+  <div class="modal-head"><h3>✦ VIP SONORA</h3><button class="modal-close" onclick="closeFeature('vipModal')">×</button></div>
+  <p class="modal-copy">Escolha o acabamento visual do seu player.</p>
+  <div class="vip-grid">
+   <button class="vip-theme" type="button" data-theme="gold" onclick="applyVipTheme('gold')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff1b8,#b98222,#fff0b0)"></span>GOLD VIP</button>
+   <button class="vip-theme" type="button" data-theme="aurora" onclick="applyVipTheme('aurora')"><span class="vip-swatch" style="background:linear-gradient(135deg,#b6fff0,#268f87,#d5fff7)"></span>AURORA</button>
+   <button class="vip-theme" type="button" data-theme="diamond" onclick="applyVipTheme('diamond')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff,#91a6d8,#e5edff)"></span>DIAMOND</button>
+   <button class="vip-theme" type="button" data-theme="rose" onclick="applyVipTheme('rose')"><span class="vip-swatch" style="background:linear-gradient(135deg,#ffe0ed,#c05b89,#fff0f6)"></span>ROSE GOLD</button>
+   <button class="vip-theme" type="button" data-theme="default" onclick="applyVipTheme('default')"><span class="vip-swatch" style="background:linear-gradient(135deg,#fff,#aaa,#eee)"></span>ORIGINAL</button>
+  </div>
+  <div class="vip-photo-box"><strong style="font-size:14px">Foto de fundo</strong><p class="modal-copy" style="margin:6px 0 0">Adicione uma foto do artista e ajuste a suavidade da imagem.</p>
+   <div class="modal-row"><button class="modal-secondary" onclick="document.getElementById('artistPhotoFiles').click()">▧ Adicionar foto</button><button class="modal-secondary" onclick="removeArtistPhoto()">Remover foto</button></div>
+   <div class="photo-strength"><span>Suave</span><input id="photoOpacity" type="range" min="8" max="38" value="23" aria-label="Suavidade da foto"><span>Destaque</span></div><p id="photoStatus" class="modal-copy" style="margin:5px 0 0">A foto ficará suavemente mesclada ao fundo.</p>
+  </div>
+  <p class="modal-copy" style="margin:14px 0 0">Área VIP preparada para recursos premium futuros.</p>
+ </section>
+</div>
+<div class="feature-modal" id="profileModal" onclick="if(event.target===this)closeFeature('profileModal')">
+ <section class="modal-sheet">
+  <div class="modal-head"><h3>Meu perfil</h3><button class="modal-close" onclick="closeFeature('profileModal')">×</button></div>
+  <div class="profile-preview"><div class="profile-large" id="profilePreview">S</div><div><strong id="profileDisplayName">Seu perfil SONORA</strong><p class="modal-copy" style="margin:5px 0 0">Personalize sua experiência musical.</p></div></div>
+  <label for="profileName" style="font-size:12px;font-weight:700">Nome do perfil</label><input class="modal-field" id="profileName" maxlength="30" placeholder="Como deseja ser chamado?">
+  <div class="modal-row"><button class="modal-secondary" onclick="document.getElementById('profilePhotoInput').click()">Adicionar foto de perfil</button><button class="modal-action" onclick="saveSonoraProfile()">Salvar perfil</button></div>
+ </section>
+</div>
+<div class="feature-modal" id="updatesModal" onclick="if(event.target===this)closeFeature('updatesModal')">
+ <section class="modal-sheet">
+  <div class="modal-head"><h3>✧ Novidades da atualização</h3><button class="modal-close" onclick="closeFeature('updatesModal')">×</button></div>
+  <div class="update-item"><strong>SONORA 5.0 · Player reorganizado</strong><p>Controles de volume ao redor do visualizador circular e atalhos de playlists na tela de reprodução.</p></div>
+  <div class="update-item"><strong>VIP SONORA</strong><p>Temas visuais e ajuste da suavidade da foto de fundo reunidos em um único painel.</p></div>
+  <div class="update-item"><strong>Perfil pessoal</strong><p>Agora você pode definir um nome e uma foto para seu perfil.</p></div>
+  <div class="update-item"><strong>Biblioteca</strong><p>Pesquisa de cantores e músicas continua disponível na biblioteca local.</p></div>
+ </section>
+</div>
+<input type="file" id="profilePhotoInput" accept="image/*" hidden>
 
 <audio id="audio"></audio>
 
@@ -956,17 +992,16 @@ function updateVolumeUI() {
   const percent = document.getElementById("volumePercent");
   const muteButton = document.getElementById("muteButton");
   const value = audio.muted ? 0 : Math.round(audio.volume * 100);
-  slider.value = String(value);
-  percent.textContent = value + "%";
-  muteButton.textContent = audio.muted || audio.volume === 0 ? "Ativar som" : "Silenciar";
-  document.getElementById("volumeToggle").textContent = value === 0 ? "♪ Sem som" : "♫ Áudio";
+  if (slider) slider.value = String(value);
+  if (percent) percent.textContent = value + "%";
+  if (muteButton) muteButton.textContent = audio.muted || audio.volume === 0 ? "Ativar som" : "Silenciar";
+  const orbitSlider = document.getElementById("orbitVolumeSlider");
+  const orbitPercent = document.getElementById("orbitVolumePercent");
+  const orbitMute = document.getElementById("orbitMute");
+  if (orbitSlider) orbitSlider.value = String(value);
+  if (orbitPercent) orbitPercent.textContent = value + "%";
+  if (orbitMute) orbitMute.textContent = value === 0 ? "×" : "♫";
 }
-
-document.getElementById("volumeSlider").addEventListener("input", event => {
-  audio.volume = Number(event.target.value) / 100;
-  audio.muted = audio.volume === 0;
-  updateVolumeUI();
-});
 
 function toggleMute() {
   if (audio.muted || audio.volume === 0) {
@@ -977,6 +1012,17 @@ function toggleMute() {
   }
   updateVolumeUI();
 }
+
+function adjustVolume(delta) {
+  audio.muted = false;
+  audio.volume = Math.max(0, Math.min(1, audio.volume + delta));
+  updateVolumeUI();
+}
+document.getElementById("orbitVolumeSlider").addEventListener("input", event => {
+  audio.volume = Number(event.target.value) / 100;
+  audio.muted = audio.volume === 0;
+  updateVolumeUI();
+});
 
 // Foto do artista escolhida pelo usuário para compor o fundo.
 artistPhotoFiles.addEventListener("change", e => {
@@ -1079,8 +1125,9 @@ function createSonoraPlaylist() {
 }
 function addSongToSonoraPlaylist(index) {
   if (!sonoraPlaylists.length) {
+    openFeature("playlistModal");
+    document.getElementById("playlistHint").textContent = "Primeiro crie uma playlist. Depois toque em ＋ Playlist na música desejada.";
     document.getElementById("newPlaylistName").focus();
-    document.getElementById("playlistHint").textContent = "Primeiro crie uma playlist acima. Depois toque em ＋ Playlist na música desejada.";
     return;
   }
   const target = activeSonoraPlaylist >= 0 ? activeSonoraPlaylist : 0;
@@ -1121,6 +1168,31 @@ function renderSonoraPlaylists() {
     selected.append(line);
   });
 }
+function openFeature(id){ document.getElementById(id)?.classList.add("open"); }
+function closeFeature(id){ document.getElementById(id)?.classList.remove("open"); }
+let profilePhotoUrl = null;
+const profilePhotoInput = document.getElementById("profilePhotoInput");
+profilePhotoInput.addEventListener("change", event => {
+ const file = event.target.files && event.target.files[0]; if(!file) return;
+ if(profilePhotoUrl) URL.revokeObjectURL(profilePhotoUrl);
+ profilePhotoUrl = URL.createObjectURL(file);
+ const preview = document.getElementById("profilePreview");
+ preview.innerHTML = ""; const img = document.createElement("img"); img.src = profilePhotoUrl; preview.append(img);
+ const button = document.getElementById("profileButton"); button.innerHTML = ""; const small = document.createElement("img"); small.src = profilePhotoUrl; button.append(small);
+ profilePhotoInput.value = "";
+});
+function saveSonoraProfile(){
+ const name = document.getElementById("profileName").value.trim() || "Usuário SONORA";
+ document.getElementById("profileDisplayName").textContent = name;
+ document.getElementById("profileButton").setAttribute("aria-label", "Perfil de " + name);
+ try{ localStorage.setItem("sonoraProfileName",name); }catch(e){}
+ closeFeature("profileModal");
+}
+try{
+ const savedName=localStorage.getItem("sonoraProfileName");
+ if(savedName){document.getElementById("profileName").value=savedName;document.getElementById("profileDisplayName").textContent=savedName;}
+}catch(e){}
+
 function applyVipTheme(theme) {
   document.body.classList.remove("vip-gold","vip-aurora","vip-diamond","vip-rose");
   if (theme !== "default") document.body.classList.add("vip-" + theme);
