@@ -1,0 +1,17 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.sonora.music'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.sonora.music'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '3.5'
+    }
+}

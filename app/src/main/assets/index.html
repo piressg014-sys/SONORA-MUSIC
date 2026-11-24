@@ -1,0 +1,998 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#ffffff">
+<title>SONORA Music 3.5</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #fafafa;
+  color: #171717;
+  font-family: Arial, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+}
+
+/* Foto do artista mesclada suavemente ao fundo branco */
+#artistBackdrop {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 24%;
+  z-index: -2;
+  opacity: 0;
+  filter: blur(2px) saturate(.78);
+  transform: scale(1.035);
+  transition: opacity .8s ease, filter .8s ease;
+  pointer-events: none;
+  /* Dissolve the photo softly into the white edges */
+  -webkit-mask-image: radial-gradient(ellipse 88% 76% at 50% 45%, #000 28%, rgba(0,0,0,.82) 58%, transparent 100%);
+  mask-image: radial-gradient(ellipse 88% 76% at 50% 45%, #000 28%, rgba(0,0,0,.82) 58%, transparent 100%);
+}
+#artistBackdrop.active { opacity: .23; }
+.videoWash {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(250,250,250,.88) 0%, rgba(250,250,250,.52) 28%, rgba(250,250,250,.48) 68%, rgba(250,250,250,.94) 100%),
+    linear-gradient(to right, rgba(250,250,250,.62), transparent 22%, transparent 78%, rgba(250,250,250,.62));
+}
+
+.app {
+  max-width: 480px;
+  margin: auto;
+  padding: 25px 22px 35px;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 38px;
+}
+
+.logo {
+  font-size: 27px;
+  font-weight: 900;
+  letter-spacing: 4px;
+}
+
+.logo span {
+  color: #999;
+}
+
+.profile {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #eeeeee;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+
+.subtitle {
+  color: #999;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+h2 {
+  font-size: 25px;
+  margin-bottom: 25px;
+}
+
+ .album-area {
+  position: relative;
+  width: min(88vw, 340px);
+  height: min(88vw, 340px);
+  margin: 12px auto 26px;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+
+#visualizer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  z-index: 1;
+}
+
+.disc {
+  position: relative;
+  z-index: 2;
+  width: min(43vw, 166px);
+  height: min(43vw, 166px);
+  border-radius: 50%;
+  padding: 7px;
+  background: linear-gradient(145deg,#ffffff,#e9e9e9);
+  box-shadow:
+    0 0 0 5px #ffffffcc,
+    0 12px 35px #00000018,
+    0 0 28px #c5a4ff55;
+}
+
+.cover {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(145deg,#dedede,#999999);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+
+.cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover-text {
+  position: absolute;
+  color: white;
+  font-size: 35px;
+  font-weight: bold;
+  letter-spacing: 5px;
+  text-shadow: 0 2px 15px #0008;
+}
+
+/* Visualizador circular SONORA */
+.cover {
+  background: radial-gradient(circle at 35% 28%,#ffffff,#e5e5e5 58%,#cfcfcf);
+}
+
+.cover-text {
+  font-size: 29px;
+  letter-spacing: 3px;
+}
+
+.track-info {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.track-info h3 {
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+
+.track-info p {
+  color: #999;
+  font-size: 14px;
+}
+
+.progress-area {
+  margin: 25px 0;
+}
+
+.progress {
+  width: 100%;
+  accent-color: #171717;
+  cursor: pointer;
+}
+
+.times {
+  display: flex;
+  justify-content: space-between;
+  color: #999;
+  font-size: 11px;
+  margin-top: 7px;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+  margin: 28px 0;
+}
+
+.controls button {
+  border: none;
+  background: transparent;
+  font-size: 27px;
+  cursor: pointer;
+  color: #222;
+}
+
+.controls .play {
+  background: #171717;
+  color: white;
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  font-size: 25px;
+  box-shadow: 0 8px 20px #0002;
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 30px 0;
+}
+
+.options button {
+  border: none;
+  background: #eeeeee;
+  padding: 12px 15px;
+  border-radius: 15px;
+  font-size: 13px;
+  color: #333;
+}
+
+.video-note {
+  text-align: center;
+  color: #999;
+  font-size: 11px;
+  margin: -18px 0 20px;
+}
+.photo-strength {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: -8px 8px 22px;
+  color: #999;
+  font-size: 11px;
+}
+.photo-strength input { flex: 1; accent-color: #b58bd5; min-width: 0; }
+
+
+.lyrics-panel {
+  margin: 34px 0 28px;
+  padding: 22px 18px 18px;
+  border: 1px solid rgba(190,160,210,.22);
+  border-radius: 24px;
+  background: rgba(255,255,255,.62);
+  box-shadow: 0 12px 34px rgba(70,45,90,.06);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.lyrics-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+.lyrics-kicker { color:#b18bc9; font-size:9px; font-weight:700; letter-spacing:2px; }
+.lyrics-heading h3 { margin-top:5px; font-size:20px; }
+.lyrics-badge { padding:7px 10px; border-radius:20px; background:#f1e9f7; color:#9870b1; font-size:9px; letter-spacing:1px; }
+.lyrics-status { margin:15px 0 8px; color:#999; font-size:12px; line-height:1.5; }
+.lyrics-content { max-height:360px; overflow-y:auto; padding:8px 2px; text-align:center; scrollbar-width:thin; scrollbar-color:#d7c1e5 transparent; }
+.lyric-line { padding:7px 4px; color:#aaa; font-size:16px; line-height:1.45; font-weight:600; transition:color .2s, transform .2s, opacity .2s; opacity:.68; }
+.lyric-line.active { color:#8e5eae; opacity:1; transform:scale(1.025); font-size:18px; }
+.lyrics-edit { margin-top:12px; border:0; background:transparent; color:#9870b1; font-size:11px; text-decoration:underline; }
+.track-edit { display:grid; gap:8px; margin-top:12px; }
+.track-edit input { width:100%; border:1px solid #e5dbea; border-radius:12px; padding:11px 12px; background:#ffffffc9; font-size:13px; color:#333; }
+.track-edit button { border:0; border-radius:12px; padding:11px; background:#a77ac4; color:white; font-weight:700; }
+.lyrics-credit { margin-top:12px; color:#b0aab4; font-size:9px; line-height:1.4; text-align:center; }
+
+
+/* Painel flutuante de volume: vidro fosco e acabamento premium */
+.volume-trigger { min-width:112px; }
+.volume-panel {
+  position: fixed;
+  z-index: 20;
+  right: max(18px, calc((100vw - 480px)/2 + 22px));
+  bottom: 26px;
+  width: min(310px, calc(100vw - 36px));
+  padding: 19px 19px 15px;
+  border: 1px solid rgba(255,255,255,.78);
+  border-radius: 23px;
+  background: linear-gradient(145deg, rgba(255,255,255,.91), rgba(246,239,251,.82));
+  box-shadow: 0 18px 55px rgba(67,45,83,.20), inset 0 1px 0 #fff;
+  backdrop-filter: blur(24px) saturate(1.35);
+  -webkit-backdrop-filter: blur(24px) saturate(1.35);
+  animation: volumeIn .22s ease-out;
+}
+.volume-panel[hidden] { display:none; }
+@keyframes volumeIn { from { opacity:0; transform:translateY(12px) scale(.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+.volume-panel-head,.volume-value-row,.volume-panel-foot { display:flex; align-items:center; justify-content:space-between; }
+.volume-panel-head strong { display:block; margin-top:4px; font-size:16px; color:#242027; }
+.volume-eyebrow { color:#a77ac4; font-size:9px; font-weight:800; letter-spacing:2px; }
+.volume-close { border:0; width:30px; height:30px; border-radius:50%; background:#eee7f2; color:#6f557e; font-size:22px; line-height:1; }
+.volume-value-row { margin:21px 0 8px; color:#827887; font-size:12px; }
+.volume-value-row strong { color:#8f62aa; font-size:18px; }
+#volumeSlider { width:100%; accent-color:#a879c5; }
+.volume-panel-foot { margin-top:9px; color:#aaa0ad; font-size:10px; }
+.volume-panel-foot button { border:1px solid #e8dced; border-radius:20px; padding:7px 13px; background:#fff9; color:#8f62aa; font-size:11px; font-weight:700; }
+
+.library {
+  margin-top: 35px;
+}
+
+.library h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.song {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.song-cover {
+  width: 45px;
+  height: 45px;
+  border-radius: 10px;
+  background: #e6e6e6;
+  display: grid;
+  place-items: center;
+}
+
+.song-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.song-info strong {
+  font-size: 14px;
+}
+
+.song-info p {
+  color: #999;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.song button {
+  border: none;
+  background: transparent;
+  font-size: 20px;
+}
+
+footer {
+  text-align: center;
+  color: #bbb;
+  font-size: 10px;
+  letter-spacing: 3px;
+  margin-top: 40px;
+}
+</style>
+</head>
+
+<body>
+<img id="artistBackdrop" alt="Foto do artista ao fundo">
+<div class="videoWash"></div>
+<div class="app">
+
+<header>
+  <div class="logo">SONORA<span>.</span></div>
+  <div class="profile">S</div>
+</header>
+
+<p class="subtitle">SEU UNIVERSO MUSICAL</p>
+<h2>Reproduzindo agora</h2>
+
+<div class="album-area">
+  <canvas id="visualizer" aria-label="Visualizador circular de áudio"></canvas>
+  <div class="disc">
+    <div class="cover">
+      <span class="cover-text">S</span>
+      <img id="artwork" hidden alt="Capa da música">
+    </div>
+  </div>
+</div>
+
+<div class="track-info">
+  <h3 id="title">SONORA MUSIC</h3>
+  <p id="artist">Escolha sua primeira música</p>
+</div>
+
+<div class="progress-area">
+  <input class="progress" type="range"
+  id="progress" min="0" max="100" value="0">
+  <div class="times">
+    <span id="current">0:00</span>
+    <span id="duration">0:00</span>
+  </div>
+</div>
+
+<div class="controls">
+  <button onclick="previousSong()">⏮</button>
+  <button class="play" id="play" onclick="togglePlay()">▶</button>
+  <button onclick="nextSong()">⏭</button>
+</div>
+
+<section class="lyrics-panel" aria-live="polite">
+  <div class="lyrics-heading">
+    <div>
+      <span class="lyrics-kicker">SONORA EXPERIENCE</span>
+      <h3>Letra da música</h3>
+    </div>
+    <span class="lyrics-badge">♫ LETRAS</span>
+  </div>
+  <p id="lyricsStatus" class="lyrics-status">A letra será procurada automaticamente quando você tocar uma música.</p>
+  <div id="lyricsContent" class="lyrics-content"></div>
+  <p class="lyrics-credit">Letras fornecidas pela base comunitária LRCLIB. A disponibilidade varia conforme a música.</p>
+</section>
+
+<div class="options">
+  <button onclick="document.getElementById('files').click()">
+    ＋ Adicionar músicas
+  </button>
+  <button id="volumeToggle" class="volume-trigger" type="button" aria-expanded="false" onclick="toggleVolumePanel()">♫ Áudio</button>
+</div>
+
+<div id="volumePanel" class="volume-panel" hidden aria-label="Controle de volume">
+  <div class="volume-panel-head">
+    <div><span class="volume-eyebrow">SONORA SOUND</span><strong>Controle de áudio</strong></div>
+    <button class="volume-close" type="button" onclick="toggleVolumePanel(false)" aria-label="Fechar">×</button>
+  </div>
+  <div class="volume-value-row"><span>Volume</span><strong id="volumePercent">100%</strong></div>
+  <input id="volumeSlider" type="range" min="0" max="100" value="100" aria-label="Volume">
+  <div class="volume-panel-foot"><span>0</span><button id="muteButton" type="button" onclick="toggleMute()">Silenciar</button><span>100</span></div>
+</div>
+
+<div class="options" style="justify-content:center;margin-top:-16px">
+  <button onclick="document.getElementById('artistPhotoFiles').click()">▧ Adicionar foto do artista</button>
+  <button onclick="removeArtistPhoto()">Remover foto</button>
+</div>
+<p class="video-note" id="photoStatus">A foto do artista ficará suavemente mesclada ao fundo branco.</p>
+<div class="photo-strength">
+  <span>Suave</span>
+  <input id="photoOpacity" type="range" min="8" max="38" value="23" aria-label="Intensidade da foto de fundo">
+  <span>Destaque</span>
+</div>
+
+<input type="file" id="files" accept="audio/*" multiple hidden>
+<input type="file" id="artistPhotoFiles" accept="image/*" hidden>
+
+<div class="library">
+  <h3>Minha biblioteca</h3>
+  <div id="playlist">
+    <p style="color:#999;font-size:13px">
+      Suas músicas aparecerão aqui.
+    </p>
+  </div>
+</div>
+
+<footer>SONORA MUSIC EXPERIENCE • 3.5</footer>
+
+<audio id="audio"></audio>
+
+</div>
+
+<script>
+const audio = document.getElementById("audio");
+const files = document.getElementById("files");
+const artistPhotoFiles = document.getElementById("artistPhotoFiles");
+const playlist = document.getElementById("playlist");
+const artistBackdrop = document.getElementById("artistBackdrop");
+
+let songs = [];
+let currentIndex = 0;
+let currentArtistPhotoUrl = null;
+let currentLyrics = [];
+let lyricsRequestId = 0;
+let lyricsSynced = false;
+let currentTrackMeta = { title: "", artist: "" };
+const photoOpacity = document.getElementById("photoOpacity");
+photoOpacity.addEventListener("input", () => {
+  artistBackdrop.style.opacity = (Number(photoOpacity.value) / 100).toString();
+});
+
+// Visualizador circular ligado ao áudio real da música
+let audioContext = null;
+let analyser = null;
+let audioSource = null;
+let frequencyData = null;
+let animationFrame = null;
+
+const visualCanvas = document.getElementById("visualizer");
+const visualCtx = visualCanvas.getContext("2d");
+
+function setupAudioVisualizer() {
+  if (analyser) return;
+
+  const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioContextClass) return;
+
+  audioContext = new AudioContextClass();
+  analyser = audioContext.createAnalyser();
+  analyser.fftSize = 512;
+  analyser.smoothingTimeConstant = 0.82;
+
+  audioSource = audioContext.createMediaElementSource(audio);
+  audioSource.connect(analyser);
+  analyser.connect(audioContext.destination);
+
+  frequencyData = new Uint8Array(analyser.frequencyBinCount);
+}
+
+function resizeVisualizer() {
+  const rect = visualCanvas.getBoundingClientRect();
+  const ratio = Math.max(1, window.devicePixelRatio || 1);
+  visualCanvas.width = Math.round(rect.width * ratio);
+  visualCanvas.height = Math.round(rect.height * ratio);
+  visualCtx.setTransform(ratio, 0, 0, ratio, 0, 0);
+  drawVisualizer();
+}
+
+function drawVisualizer() {
+  const width = visualCanvas.clientWidth;
+  const height = visualCanvas.clientHeight;
+  if (!width || !height) return;
+
+  visualCtx.clearRect(0, 0, width, height);
+  const cx = width / 2;
+  const cy = height / 2;
+  const baseRadius = Math.min(width, height) * 0.315;
+
+  if (analyser && frequencyData && !audio.paused) {
+    analyser.getByteFrequencyData(frequencyData);
+  }
+
+  // Aro suave e colorido em volta do círculo central
+  for (let ring = 0; ring < 3; ring++) {
+    const radius = baseRadius + 13 + ring * 13;
+    visualCtx.beginPath();
+    visualCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+    visualCtx.strokeStyle = [
+      "rgba(238,150,105,0.62)",
+      "rgba(193,105,220,0.48)",
+      "rgba(130,105,220,0.32)"
+    ][ring];
+    visualCtx.lineWidth = ring === 0 ? 1.6 : 1.1;
+    visualCtx.stroke();
+  }
+
+  const bars = 112;
+  const idlePulse = audio.paused ? 0 : 1;
+  for (let i = 0; i < bars; i++) {
+    const angle = (i / bars) * Math.PI * 2 - Math.PI / 2;
+    let value = 0;
+
+    if (analyser && frequencyData && !audio.paused) {
+      const bin = Math.floor(i / bars * Math.min(150, frequencyData.length));
+      value = frequencyData[bin] / 255;
+    }
+
+    const wave = audio.paused ? 0 : (Math.sin(Date.now() / 170 + i * 0.22) + 1) * 0.025;
+    const length = 3 + value * 43 + wave * 24;
+    const inner = baseRadius + 22;
+    const outer = inner + length;
+
+    const x1 = cx + Math.cos(angle) * inner;
+    const y1 = cy + Math.sin(angle) * inner;
+    const x2 = cx + Math.cos(angle) * outer;
+    const y2 = cy + Math.sin(angle) * outer;
+
+    const hue = 24 + (i / bars) * 285;
+    visualCtx.beginPath();
+    visualCtx.moveTo(x1, y1);
+    visualCtx.lineTo(x2, y2);
+    visualCtx.strokeStyle = `hsla(${hue}, 78%, ${audio.paused ? 66 : 57}%, ${0.48 + value * 0.48})`;
+    visualCtx.lineWidth = value > 0.55 ? 2.3 : 1.5;
+    visualCtx.lineCap = "round";
+    visualCtx.shadowBlur = value > 0.25 ? 8 : 2;
+    visualCtx.shadowColor = `hsla(${hue}, 90%, 65%, 0.55)`;
+    visualCtx.stroke();
+  }
+  visualCtx.shadowBlur = 0;
+
+  // Pequeno halo em volta da arte
+  const halo = visualCtx.createRadialGradient(cx, cy, baseRadius - 5, cx, cy, baseRadius + 7);
+  halo.addColorStop(0, "rgba(255,255,255,0)");
+  halo.addColorStop(0.55, "rgba(255,255,255,0.92)");
+  halo.addColorStop(1, "rgba(194,145,220,0)");
+  visualCtx.beginPath();
+  visualCtx.arc(cx, cy, baseRadius + 7, 0, Math.PI * 2);
+  visualCtx.fillStyle = halo;
+  visualCtx.fill();
+
+  if (!audio.paused) {
+    animationFrame = requestAnimationFrame(drawVisualizer);
+  }
+}
+
+function startVisualizer() {
+  if (animationFrame) cancelAnimationFrame(animationFrame);
+  drawVisualizer();
+  if (!audio.paused) animationFrame = requestAnimationFrame(drawVisualizer);
+}
+
+window.addEventListener("resize", resizeVisualizer);
+
+function formatTime(time) {
+  if (!Number.isFinite(time)) return "0:00";
+  const min = Math.floor(time / 60);
+  const sec = Math.floor(time % 60);
+  return min + ":" + String(sec).padStart(2,"0");
+}
+
+function identifyTrackFromFilename(filename) {
+  let clean = filename.replace(/\.[^/.]+$/, "");
+  // Remove common download tags and distributor labels often appended to filenames.
+  clean = clean.replace(/\s*\((?:M4A|MP3|128K|320K|AAC|AUDIO|KONDZILLA|LYRICS?|OFFICIAL[^)]*)[^)]*\)/gi, "");
+  clean = clean.replace(/\s*\[(?:M4A|MP3|128K|320K|AAC|AUDIO)[^\]]*\]/gi, "").trim();
+  const parts = clean.split(/\s+-\s+/, 2);
+  if (parts.length === 2) return { artist: parts[0].trim(), title: parts[1].trim() };
+  return { artist: "", title: clean };
+}
+
+function setLyricsStatus(message) {
+  document.getElementById("lyricsStatus").textContent = message;
+}
+
+function parseSyncedLyrics(text) {
+  const rows = [];
+  for (const raw of text.split(/\r?\n/)) {
+    const match = raw.match(/^\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\](.*)$/);
+    if (!match) continue;
+    const fraction = match[3] ? Number("0." + match[3]) : 0;
+    const seconds = Number(match[1]) * 60 + Number(match[2]) + fraction;
+    const line = match[4].trim();
+    if (line) rows.push({ time: seconds, text: line });
+  }
+  return rows.sort((a,b) => a.time - b.time);
+}
+
+function renderLyrics(lines, synced) {
+  const container = document.getElementById("lyricsContent");
+  container.innerHTML = "";
+  currentLyrics = lines;
+  lyricsSynced = synced;
+  if (!lines.length) {
+    setLyricsStatus("Não encontramos a letra desta faixa. a faixa pode não estar cadastrada na base de letras.");
+    return;
+  }
+  setLyricsStatus(synced ? "Letra sincronizada com a reprodução." : "Letra encontrada. Esta versão não possui sincronização por tempo.");
+  lines.forEach((entry, index) => {
+    const line = document.createElement("p");
+    line.className = "lyric-line";
+    line.textContent = typeof entry === "string" ? entry : entry.text;
+    line.dataset.index = String(index);
+    container.appendChild(line);
+  });
+}
+
+async function searchLyrics(title, artist) {
+  const requestId = ++lyricsRequestId;
+  currentTrackMeta = { title: title.trim(), artist: artist.trim() };
+  document.getElementById("lyricsContent").innerHTML = "";
+  currentLyrics = [];
+  lyricsSynced = false;
+  setLyricsStatus("Procurando a letra de " + currentTrackMeta.title + "...");
+  if (!currentTrackMeta.title) {
+    setLyricsStatus("Não foi possível identificar o título desta faixa pelo arquivo. Tente um arquivo com artista e música no nome.");
+    return;
+  }
+
+  const headers = { "X-User-Agent": "SONORA Music/3.4 (Android music player)" };
+  const normalize = value => (value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
+  const cleanTitle = value => value
+    .replace(/\s*\((?:KondZilla|Official[^)]*|Lyrics?[^)]*)\)/gi, "")
+    .replace(/\s*\[(?:Official[^\]]*|Lyrics?[^\]]*)\]/gi, "")
+    .trim();
+  const titleVariants = [...new Set([currentTrackMeta.title, cleanTitle(currentTrackMeta.title)].filter(Boolean))];
+
+  try {
+    let results = [];
+    // Try a broad keyword search first; it is more tolerant of punctuation and extra tags.
+    const queries = [];
+    for (const candidate of titleVariants) {
+      queries.push(candidate + (currentTrackMeta.artist ? " " + currentTrackMeta.artist : ""));
+    }
+    for (const q of queries) {
+      const response = await fetch("https://lrclib.net/api/search?q=" + encodeURIComponent(q), { headers });
+      if (response.ok) {
+        const found = await response.json();
+        if (Array.isArray(found)) results.push(...found);
+      }
+      if (requestId !== lyricsRequestId) return;
+      if (results.length) break;
+    }
+
+    // Structured search fallback.
+    if (!results.length) {
+      for (const candidate of titleVariants) {
+        const params = new URLSearchParams({ track_name: candidate });
+        if (currentTrackMeta.artist) params.set("artist_name", currentTrackMeta.artist);
+        const response = await fetch("https://lrclib.net/api/search?" + params.toString(), { headers });
+        if (response.ok) {
+          const found = await response.json();
+          if (Array.isArray(found)) results.push(...found);
+        }
+        if (requestId !== lyricsRequestId) return;
+        if (results.length) break;
+      }
+    }
+
+    if (requestId !== lyricsRequestId) return;
+    if (!results.length) {
+      renderLyrics([], false);
+      return;
+    }
+
+    const wantedTitle = normalize(cleanTitle(currentTrackMeta.title));
+    const wantedArtist = normalize(currentTrackMeta.artist);
+    const unique = Array.from(new Map(results.map(item => [item.id || [item.trackName, item.artistName].join("|"), item])).values());
+    unique.sort((a,b) => {
+      const score = item => {
+        const t = normalize(item.trackName || item.name);
+        const ar = normalize(item.artistName);
+        let points = 0;
+        if (t === wantedTitle) points += 8;
+        else if (t.includes(wantedTitle) || wantedTitle.includes(t)) points += 3;
+        if (wantedArtist && ar === wantedArtist) points += 8;
+        else if (wantedArtist && (ar.includes(wantedArtist) || wantedArtist.includes(ar))) points += 3;
+        if (Number.isFinite(audio.duration) && item.duration) points -= Math.min(3, Math.abs(audio.duration - item.duration) / 20);
+        return points;
+      };
+      return score(b) - score(a);
+    });
+
+    // Prefer a result with actual lyric text, not an empty/instrumental entry.
+    const match = unique.find(item => item.syncedLyrics || item.plainLyrics) || unique[0];
+    if (match.syncedLyrics) {
+      const synced = parseSyncedLyrics(match.syncedLyrics);
+      if (synced.length) { renderLyrics(synced, true); return; }
+    }
+    if (match.plainLyrics) {
+      renderLyrics(match.plainLyrics.split(/\r?\n/).map(line => line.trim()).filter(Boolean), false);
+      return;
+    }
+    renderLyrics([], false);
+  } catch (error) {
+    if (requestId === lyricsRequestId) setLyricsStatus("Não foi possível acessar a base de letras. Confira a internet e toque em Buscar letra para tentar novamente.");
+  }
+}
+function updateSyncedLyrics() {
+  if (!lyricsSynced || !currentLyrics.length) return;
+  let active = -1;
+  for (let i = 0; i < currentLyrics.length; i++) {
+    if (audio.currentTime >= currentLyrics[i].time) active = i;
+    else break;
+  }
+  const nodes = document.querySelectorAll(".lyric-line");
+  nodes.forEach((node, index) => node.classList.toggle("active", index === active));
+  if (active >= 0 && nodes[active]) {
+    const container = document.getElementById("lyricsContent");
+    const node = nodes[active];
+    const target = node.offsetTop - container.offsetTop - container.clientHeight / 2 + node.clientHeight / 2;
+    container.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+  }
+}
+
+function loadSong(index) {
+  if (!songs.length) return;
+
+  currentIndex = index;
+  const song = songs[index];
+  const meta = identifyTrackFromFilename(song.name);
+  song.trackTitle = meta.title;
+  song.artistName = meta.artist;
+  searchLyrics(meta.title, meta.artist);
+
+  audio.src = song.url;
+
+  document.getElementById("title").textContent =
+    song.name.replace(/\.[^/.]+$/, "");
+
+  document.getElementById("artist").textContent =
+    meta.artist || "Sua biblioteca SONORA";
+
+  document.getElementById("play").textContent = "▶";
+
+  if (song.art) {
+    const artwork = document.getElementById("artwork");
+    artwork.src = song.art;
+    artwork.hidden = false;
+    document.querySelector(".cover-text").hidden = true;
+  } else {
+    document.getElementById("artwork").hidden = true;
+    document.querySelector(".cover-text").hidden = false;
+  }
+}
+
+function togglePlay() {
+  if (!songs.length) {
+    files.click();
+    return;
+  }
+
+  if (audio.paused) {
+    setupAudioVisualizer();
+    if (audioContext && audioContext.state === "suspended") {
+      audioContext.resume();
+    }
+    audio.play().catch(() => {});
+  } else {
+    audio.pause();
+  }
+}
+
+audio.addEventListener("play", () => {
+  document.getElementById("play").textContent = "Ⅱ";
+  startVisualizer();
+});
+
+audio.addEventListener("pause", () => {
+  document.getElementById("play").textContent = "▶";
+  if (animationFrame) cancelAnimationFrame(animationFrame);
+  animationFrame = null;
+  drawVisualizer();
+});
+
+audio.addEventListener("timeupdate", () => {
+  const progress = document.getElementById("progress");
+
+  if (audio.duration) {
+    progress.value = audio.currentTime / audio.duration * 100;
+  }
+
+  document.getElementById("current").textContent =
+    formatTime(audio.currentTime);
+  updateSyncedLyrics();
+});
+
+audio.addEventListener("loadedmetadata", () => {
+  document.getElementById("duration").textContent =
+    formatTime(audio.duration);
+});
+
+document.getElementById("progress").addEventListener("input", e => {
+  if (audio.duration) {
+    audio.currentTime = e.target.value / 100 * audio.duration;
+  }
+});
+
+function playLoadedSong() {
+  setupAudioVisualizer();
+  if (audioContext && audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+  audio.play().catch(() => {});
+}
+
+function nextSong() {
+  if (!songs.length) return;
+  loadSong((currentIndex + 1) % songs.length);
+  playLoadedSong();
+}
+
+function previousSong() {
+  if (!songs.length) return;
+  loadSong((currentIndex - 1 + songs.length) % songs.length);
+  playLoadedSong();
+}
+
+function toggleVolumePanel(force) {
+  const panel = document.getElementById("volumePanel");
+  const button = document.getElementById("volumeToggle");
+  const open = typeof force === "boolean" ? force : panel.hidden;
+  panel.hidden = !open;
+  button.setAttribute("aria-expanded", String(open));
+}
+
+function updateVolumeUI() {
+  const slider = document.getElementById("volumeSlider");
+  const percent = document.getElementById("volumePercent");
+  const muteButton = document.getElementById("muteButton");
+  const value = audio.muted ? 0 : Math.round(audio.volume * 100);
+  slider.value = String(value);
+  percent.textContent = value + "%";
+  muteButton.textContent = audio.muted || audio.volume === 0 ? "Ativar som" : "Silenciar";
+  document.getElementById("volumeToggle").textContent = value === 0 ? "♪ Sem som" : "♫ Áudio";
+}
+
+document.getElementById("volumeSlider").addEventListener("input", event => {
+  audio.volume = Number(event.target.value) / 100;
+  audio.muted = audio.volume === 0;
+  updateVolumeUI();
+});
+
+function toggleMute() {
+  if (audio.muted || audio.volume === 0) {
+    audio.muted = false;
+    if (audio.volume === 0) audio.volume = 0.7;
+  } else {
+    audio.muted = true;
+  }
+  updateVolumeUI();
+}
+
+// Foto do artista escolhida pelo usuário para compor o fundo.
+artistPhotoFiles.addEventListener("change", e => {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  if (currentArtistPhotoUrl) URL.revokeObjectURL(currentArtistPhotoUrl);
+  currentArtistPhotoUrl = URL.createObjectURL(file);
+  artistBackdrop.src = currentArtistPhotoUrl;
+  artistBackdrop.classList.add("active");
+  artistBackdrop.style.opacity = (Number(photoOpacity.value) / 100).toString();
+  document.getElementById("photoStatus").textContent = "Foto aplicada: " + file.name;
+  artistPhotoFiles.value = "";
+});
+
+function removeArtistPhoto() {
+  artistBackdrop.classList.remove("active");
+  artistBackdrop.style.opacity = "0";
+  artistBackdrop.removeAttribute("src");
+  if (currentArtistPhotoUrl) URL.revokeObjectURL(currentArtistPhotoUrl);
+  currentArtistPhotoUrl = null;
+  document.getElementById("photoStatus").textContent = "A foto do artista ficará suavemente mesclada ao fundo branco.";
+}
+
+audio.addEventListener("ended", nextSong);
+
+files.addEventListener("change", e => {
+  const selected = Array.from(e.target.files);
+
+  selected.forEach(file => {
+    if (!file.type.startsWith("audio/")) return;
+
+    songs.push({
+      name: file.name,
+      url: URL.createObjectURL(file)
+    });
+  });
+
+  renderPlaylist();
+
+  if (songs.length && audio.paused && !audio.src) {
+    loadSong(0);
+  }
+
+  files.value = "";
+});
+
+function renderPlaylist() {
+  playlist.innerHTML = "";
+
+  songs.forEach((song,index) => {
+    const item = document.createElement("div");
+    item.className = "song";
+
+    const cover = document.createElement("div");
+    cover.className = "song-cover";
+    cover.textContent = "♫";
+
+    const info = document.createElement("div");
+    info.className = "song-info";
+
+    const name = document.createElement("strong");
+    name.textContent = song.name.replace(/\.[^/.]+$/, "");
+
+    const artist = document.createElement("p");
+    const meta = identifyTrackFromFilename(song.name);
+    artist.textContent = meta.artist || "Arquivo local";
+
+    info.append(name,artist);
+
+    const button = document.createElement("button");
+    button.textContent = "▶";
+    button.onclick = () => {
+      loadSong(index);
+      playLoadedSong();
+    };
+
+    item.append(cover,info,button);
+    playlist.append(item);
+  });
+}
+
+resizeVisualizer();
+updateVolumeUI();
+</script>
+
+</body>
+</html>
