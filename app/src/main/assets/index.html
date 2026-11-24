@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#ffffff">
-<title>SONORA Music 5.0</title>
+<title>SONORA Music 6.0</title>
 
 <style>
 * {
@@ -431,6 +431,28 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
 .update-item{padding:13px 0;border-bottom:1px solid #f0ebf2}.update-item strong{font-size:13px}.update-item p{font-size:12px;color:#918896;margin-top:5px;line-height:1.5}
 @media(max-width:360px){.orbit-control{width:33px;height:33px}.orbit-volume{left:15%;right:15%}.header-icon{width:38px;height:38px}}
 
+
+/* SONORA 6.0: Premium demonstrativo, modo escuro e disco de vinil */
+.header-icon{font-weight:800}
+.vinyl-record{padding:0!important;background:radial-gradient(circle,#333 0 3%,#111 4% 100%)!important;box-shadow:0 0 0 5px #ffffffd9,0 14px 35px #0003,0 0 30px color-mix(in srgb,var(--vip-accent) 45%,transparent)!important;overflow:hidden}
+.vinyl-grooves{position:absolute;inset:5px;border-radius:50%;background:repeating-radial-gradient(circle at center,#171717 0 2px,#292929 2.5px 3.5px,#111 4px 5px);border:1px solid #555;}
+.vinyl-label{position:absolute;inset:31%;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#fff4c6,var(--vip-accent) 48%,#17151d 100%);border:3px solid #17151d;box-shadow:0 0 0 2px #ffffff8a;overflow:hidden}
+.vinyl-center{font-size:9px;font-weight:900;letter-spacing:1px;color:#fff;text-shadow:0 1px 5px #0008}
+.vinyl-label img{position:absolute;width:100%;height:100%;object-fit:cover;border-radius:50%}
+body.is-playing .vinyl-record{animation:vinylSpin 3.2s linear infinite}
+@keyframes vinylSpin{to{transform:rotate(360deg)}}
+body.dark-mode{--vip-bg:#101116;--vip-ink:#f4f1f7;background:#101116;color:#f4f1f7}
+body.dark-mode .videoWash{background:linear-gradient(to bottom,#101116e8,#101116a8 45%,#101116ee)}
+body.dark-mode .feature-panel,body.dark-mode .lyrics-panel,body.dark-mode .library,body.dark-mode .modal-sheet{background:#1b1b24;color:#f4f1f7;border-color:#34313c}
+body.dark-mode .header-icon,body.dark-mode .player-shortcuts button,body.dark-mode .vip-theme,body.dark-mode .modal-secondary{background:#25232d;color:#f4f1f7;border-color:#3a3543}
+body.dark-mode .artist-search,body.dark-mode .modal-field,body.dark-mode .playlist-create input{background:#24232c;color:#fff;border-color:#46404e}
+body.dark-mode .disc{box-shadow:0 0 0 5px #ffffff20,0 12px 35px #0008,0 0 28px color-mix(in srgb,var(--vip-accent) 45%,transparent)!important}
+.premium-hero{padding:18px;border-radius:20px;background:linear-gradient(135deg,#17151d,#3a2a4b 65%,#916d36);color:white;margin:12px 0 16px}
+.premium-price{font-size:32px;font-weight:900;margin:8px 0}.premium-benefit{padding:10px 0;border-bottom:1px solid #eee8f1;font-size:13px}.premium-status{padding:11px;border-radius:12px;background:#edf8ef;color:#27663b;font-size:12px;font-weight:700;margin-top:12px;display:none}
+.ai-search-row{display:flex;gap:8px}.ai-search-row input{flex:1;min-width:0}.demo-tag{display:inline-block;padding:5px 9px;border-radius:20px;background:#f2e8fb;color:#80549a;font-size:10px;font-weight:800;letter-spacing:1px;margin-bottom:10px}
+.ai-result{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #eee8f1;font-size:13px}.ai-result small{display:block;color:#999;margin-top:4px}.ai-result button{border:1px solid #e7dced;border-radius:10px;background:#fff;padding:8px;color:#80549a;font-weight:700}
+@media(prefers-reduced-motion:reduce){body.is-playing .vinyl-record{animation-duration:12s}}
+
 </style>
 </head>
 
@@ -448,7 +470,9 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
 <header>
   <div class="logo">SONORA<span>.</span></div>
   <div class="header-actions">
-    <button class="header-icon" type="button" onclick="openFeature('vipModal')" aria-label="VIP SONORA">✦</button>
+    <button class="header-icon" type="button" onclick="openFeature('premiumModal')" aria-label="SONORA Premium">♛</button>
+    <button class="header-icon" type="button" onclick="toggleColorMode()" id="modeToggle" aria-label="Alternar tema claro e escuro">☾</button>
+    <button class="header-icon" type="button" onclick="openFeature('aiModal')" aria-label="SONORA AI">✧</button>
     <button class="header-icon" type="button" onclick="openFeature('updatesModal')" aria-label="Novidades">◉</button>
     <button class="profile" id="profileButton" type="button" onclick="openFeature('profileModal')" aria-label="Meu perfil">S</button>
   </div>
@@ -464,9 +488,8 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
   <button class="orbit-control orbit-mute" type="button" id="orbitMute" onclick="toggleMute()" aria-label="Silenciar">♫</button>
   <div class="orbit-volume"><span>VOL</span><input id="orbitVolumeSlider" type="range" min="0" max="100" value="100" aria-label="Volume da música"><span id="orbitVolumePercent">100%</span></div>
   <div class="disc">
-    <div class="cover">
-      <span class="cover-text">S</span>
-      <img id="artwork" hidden alt="Capa da música">
+    <div class="cover vinyl-record" id="vinylRecord" aria-label="Disco de vinil SONORA giratório">
+      <div class="vinyl-grooves"></div><div class="vinyl-label"><span class="vinyl-center">SONORA</span><img id="artwork" hidden alt="Capa da música"></div>
     </div>
   </div>
 </div>
@@ -492,6 +515,7 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
 </div>
 <div class="player-shortcuts">
   <button type="button" onclick="openFeature('playlistModal')">♫ Minhas playlists</button>
+  <button type="button" onclick="openFeature('aiModal')">✧ SONORA AI</button>
   <button type="button" onclick="document.getElementById('files').click()">＋ Adicionar músicas</button>
 </div>
 
@@ -521,9 +545,22 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
   </div>
 </div>
 
-<footer>SONORA MUSIC EXPERIENCE • 5.0</footer>
+<footer>SONORA MUSIC EXPERIENCE • 6.0</footer>
 
 
+<!-- Painéis SONORA 6.0 -->
+<div class="feature-modal" id="premiumModal" onclick="if(event.target===this)closeFeature('premiumModal')"><section class="modal-sheet">
+ <div class="modal-head"><h3>♛ SONORA PREMIUM</h3><button class="modal-close" onclick="closeFeature('premiumModal')">×</button></div>
+ <div class="premium-hero"><span class="demo-tag">MODO DEMONSTRAÇÃO · SEM COBRANÇA</span><div style="font-size:22px;font-weight:900">Sua música. Sem limites.</div><div class="premium-price">R$ 20,99 <span style="font-size:13px;font-weight:500">/ mês</span></div><div style="font-size:12px;opacity:.8">Prévia do plano mensal SONORA</div></div>
+ <div class="premium-benefit">✧ Busca inteligente SONORA AI</div><div class="premium-benefit">↓ Experiência de músicas offline</div><div class="premium-benefit">♛ Todos os temas VIP e personalização</div><div class="premium-benefit">◉ Sem anúncios na experiência Premium</div><div class="premium-benefit">♫ Catálogo musical online ilimitado (prévia)</div>
+ <p class="modal-copy" style="margin:14px 0 8px">Esta ativação é apenas demonstrativa. Nenhum pagamento será solicitado ou realizado. Catálogo online e downloads licenciados serão conectados futuramente.</p>
+ <div class="modal-row" style="margin-top:12px"><button class="modal-secondary" style="flex:1" onclick="closeFeature('premiumModal');openFeature('vipModal')">Ver temas VIP</button><button class="modal-action" style="flex:1" onclick="activatePremiumDemo()">Ativar demonstração</button></div><div id="premiumDemoStatus" class="premium-status">✓ Premium demonstrativo ativado neste aparelho. Nenhuma cobrança foi feita.</div>
+ </section></div>
+<div class="feature-modal" id="aiModal" onclick="if(event.target===this)closeFeature('aiModal')"><section class="modal-sheet">
+ <div class="modal-head"><h3>✧ SONORA AI</h3><button class="modal-close" onclick="closeFeature('aiModal')">×</button></div><span class="demo-tag">PRÉVIA INTERATIVA</span><p class="modal-copy">Pesquise por artista, música ou estilo. Esta tela demonstra a experiência; o catálogo licenciado será integrado depois.</p>
+ <div class="ai-search-row"><input id="aiSearchInput" class="modal-field" style="margin:0" placeholder="Ex.: músicas do Emicida"><button class="modal-action" onclick="searchSonoraDemo()">Buscar</button></div>
+ <div id="aiDemoResults" style="margin-top:14px"><p class="modal-copy" style="margin:12px 0 0">Experimente: Emicida, Anitta, rock ou sertanejo.</p></div>
+ </section></div>
 <!-- Painéis do SONORA 5.0 -->
 <div class="feature-modal" id="playlistModal" onclick="if(event.target===this)closeFeature('playlistModal')">
  <section class="modal-sheet">
@@ -565,7 +602,7 @@ body.vip-rose { --vip-accent:#cf83a4; --vip-bg:#fff5f8; --vip-ink:#462333; }
   <div class="update-item"><strong>SONORA 5.0 · Player reorganizado</strong><p>Controles de volume ao redor do visualizador circular e atalhos de playlists na tela de reprodução.</p></div>
   <div class="update-item"><strong>VIP SONORA</strong><p>Temas visuais e ajuste da suavidade da foto de fundo reunidos em um único painel.</p></div>
   <div class="update-item"><strong>Perfil pessoal</strong><p>Agora você pode definir um nome e uma foto para seu perfil.</p></div>
-  <div class="update-item"><strong>Biblioteca</strong><p>Pesquisa de cantores e músicas continua disponível na biblioteca local.</p></div>
+  <div class="update-item"><strong>SONORA 6.0 · Premium demonstrativo</strong><p>Prévia da assinatura de R$ 20,99/mês, sem cobrança real, com apresentação dos benefícios Premium.</p></div><div class="update-item"><strong>SONORA AI · Prévia</strong><p>Nova tela demonstrativa de busca inteligente e recursos offline planejados.</p></div><div class="update-item"><strong>Visual e desempenho</strong><p>Disco de vinil giratório, modo claro/escuro e visualizador mais leve para ajudar na rolagem.</p></div><div class="update-item"><strong>Biblioteca</strong><p>Pesquisa de cantores e músicas continua disponível na biblioteca local.</p></div>
  </section>
 </div>
 <input type="file" id="profilePhotoInput" accept="image/*" hidden>
@@ -658,7 +695,7 @@ function drawVisualizer() {
     visualCtx.stroke();
   }
 
-  const bars = 112;
+  const bars = 64;
   const idlePulse = audio.paused ? 0 : 1;
   for (let i = 0; i < bars; i++) {
     const angle = (i / bars) * Math.PI * 2 - Math.PI / 2;
@@ -686,7 +723,7 @@ function drawVisualizer() {
     visualCtx.strokeStyle = `hsla(${hue}, 78%, ${audio.paused ? 66 : 57}%, ${0.48 + value * 0.48})`;
     visualCtx.lineWidth = value > 0.55 ? 2.3 : 1.5;
     visualCtx.lineCap = "round";
-    visualCtx.shadowBlur = value > 0.25 ? 8 : 2;
+    visualCtx.shadowBlur = value > 0.25 ? 3 : 0;
     visualCtx.shadowColor = `hsla(${hue}, 90%, 65%, 0.55)`;
     visualCtx.stroke();
   }
@@ -872,7 +909,7 @@ function updateSyncedLyrics() {
     const container = document.getElementById("lyricsContent");
     const node = nodes[active];
     const target = node.offsetTop - container.offsetTop - container.clientHeight / 2 + node.clientHeight / 2;
-    container.scrollTo({ top: Math.max(0, target), behavior: "smooth" });
+    container.scrollTop = Math.max(0, target);
   }
 }
 
@@ -925,11 +962,13 @@ function togglePlay() {
 }
 
 audio.addEventListener("play", () => {
+  document.body.classList.add("is-playing");
   document.getElementById("play").textContent = "Ⅱ";
   startVisualizer();
 });
 
 audio.addEventListener("pause", () => {
+  document.body.classList.remove("is-playing");
   document.getElementById("play").textContent = "▶";
   if (animationFrame) cancelAnimationFrame(animationFrame);
   animationFrame = null;
@@ -1201,6 +1240,29 @@ function applyVipTheme(theme) {
 }
 try { applyVipTheme(localStorage.getItem("sonoraVipTheme") || "default"); } catch(e) { applyVipTheme("default"); }
 
+
+
+function toggleColorMode(){
+ document.body.classList.toggle("dark-mode");
+ const dark=document.body.classList.contains("dark-mode");
+ document.getElementById("modeToggle").textContent=dark?"☀":"☾";
+ try{localStorage.setItem("sonoraColorMode",dark?"dark":"light");}catch(e){}
+}
+try{if(localStorage.getItem("sonoraColorMode")==="dark"){document.body.classList.add("dark-mode");document.getElementById("modeToggle").textContent="☀";}}catch(e){}
+function activatePremiumDemo(){
+ try{localStorage.setItem("sonoraPremiumDemo","active");}catch(e){}
+ document.getElementById("premiumDemoStatus").style.display="block";
+}
+try{if(localStorage.getItem("sonoraPremiumDemo")==="active"){document.getElementById("premiumDemoStatus").style.display="block";}}catch(e){}
+function searchSonoraDemo(){
+ const q=(document.getElementById("aiSearchInput").value||"").trim();
+ const box=document.getElementById("aiDemoResults");
+ if(!q){box.innerHTML='<p class="modal-copy">Digite um artista, música ou estilo para testar.</p>';return;}
+ const samples=[{title:"Faixa demonstrativa 01",artist:"SONORA AI · Resultado ilustrativo"},{title:"Mix recomendado",artist:"SONORA AI · Seleção por estilo"},{title:"Descobertas para você",artist:"SONORA AI · Recomendação demonstrativa"}];
+ box.innerHTML='<p class="modal-copy" style="margin:12px 0 4px">Resultados ilustrativos para: <strong></strong></p>';
+ box.querySelector("strong").textContent=q;
+ samples.forEach((item,i)=>{const row=document.createElement("div");row.className="ai-result";const info=document.createElement("div");const title=document.createElement("strong");title.textContent=item.title;const sub=document.createElement("small");sub.textContent=item.artist;info.append(title,sub);const actions=document.createElement("div");actions.style.cssText="display:flex;gap:5px";const play=document.createElement("button");play.textContent="▶ Prévia";play.onclick=()=>alert("Prévia demonstrativa. O catálogo musical será conectado futuramente.");const save=document.createElement("button");save.textContent="↓ Offline";save.onclick=()=>alert("Download demonstrativo. O modo offline real dependerá da integração com o catálogo licenciado.");actions.append(play,save);row.append(info,actions);box.append(row);});
+}
 
 resizeVisualizer();
 updateVolumeUI();
