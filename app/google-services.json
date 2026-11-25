@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1005302895795-16e16qermf3pi38edrigpdn0mp4m72ho.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sonora.music",
+            "certificate_hash": "9d0a222924bf55b26b66b5d3bf77aaf092a89fbe"
+          }
+        },
+        {
           "client_id": "1005302895795-36gqh3qp1vchsctsob21jkigorbo6bra.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
