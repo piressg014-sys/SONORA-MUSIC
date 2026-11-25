@@ -317,7 +317,7 @@ class MainActivity : Activity() {
                     12500 -> "Falha na configuração do login Google (12500). Confira os clientes OAuth."
                     12501 -> "Login cancelado pelo usuário."
                     7 -> "Sem conexão com a internet."
-                    else -> "Erro Google ${e.statusCode}: ${e.status.message ?: "não foi possível autenticar"}."
+                    else -> "Erro Google ${e.statusCode}: ${e.status.statusMessage ?: "não foi possível autenticar"}."
                 }
                 sendAuthResult(false, detail)
             } catch (e: Exception) {
