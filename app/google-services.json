@@ -30,6 +30,14 @@
           }
         },
         {
+          "client_id": "1005302895795-dbptkph781k4u409dr0pkub17dd642qp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sonora.music",
+            "certificate_hash": "f035eaf700abe89116e69b53137ec9bf19317ce0"
+          }
+        },
+        {
           "client_id": "1005302895795-ek11se2pujvmf66abh0ifuc40mbij2dr.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
