@@ -142,7 +142,9 @@ class MainActivity : Activity() {
             "ERROR_EMAIL_ALREADY_IN_USE" -> "Este e-mail já possui uma conta. Faça login."
             "ERROR_USER_NOT_FOUND", "ERROR_WRONG_PASSWORD", "ERROR_INVALID_CREDENTIAL" -> "E-mail ou senha incorretos."
             "ERROR_TOO_MANY_REQUESTS" -> "Muitas tentativas. Aguarde um pouco e tente novamente."
-            else -> "Não foi possível concluir. Confira sua conexão e os dados e tente novamente."
+            "ERROR_EXPIRED_ACTION_CODE" -> "Este link de recuperação expirou. Solicite um novo link e abra o e-mail mais recente."
+            "ERROR_INVALID_ACTION_CODE" -> "Este link de recuperação não é válido ou já foi utilizado. Solicite outro."
+            else -> "Não foi possível concluir. Confira sua conexão e tente novamente."
         }
     }
 
@@ -173,7 +175,7 @@ class MainActivity : Activity() {
         fun resetPassword(email: String) {
             runOnUiThread {
                 auth.sendPasswordResetEmail(email.trim()).addOnCompleteListener { task ->
-                    if (task.isSuccessful) sendAuthResult(true, "Enviamos um link de recuperação para seu e-mail.")
+                    if (task.isSuccessful) sendAuthResult(true, "E-mail enviado! Abra o link mais recente recebido. Por segurança, o link tem validade limitada. Confira também Spam e Promoções.")
                     else sendAuthResult(false, friendlyAuthError(task.exception))
                 }
             }
@@ -299,13 +301,27 @@ class MainActivity : Activity() {
         if (requestCode == googleSignInRequest) {
             try {
                 val account = GoogleSignIn.getSignedInAccountFromIntent(data).getResult(ApiException::class.java)
-                val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+                val idToken = account.idToken
+                if (idToken.isNullOrBlank()) {
+                    sendAuthResult(false, "O Google não retornou o token de acesso. Verifique o cliente OAuth Web e Android no Firebase.")
+                    return
+                }
+                val credential = GoogleAuthProvider.getCredential(idToken, null)
                 auth.signInWithCredential(credential).addOnCompleteListener { task ->
                     if (task.isSuccessful) sendAuthResult(true, "Login com Google realizado!", auth.currentUser?.email.orEmpty())
-                    else sendAuthResult(false, friendlyAuthError(task.exception))
+                    else sendAuthResult(false, "Falha no Firebase ao validar o Google: ${friendlyAuthError(task.exception)}")
                 }
-            } catch (_: ApiException) {
-                sendAuthResult(false, "Login com Google cancelado ou não concluído. Confira a configuração OAuth.")
+            } catch (e: ApiException) {
+                val detail = when (e.statusCode) {
+                    10 -> "Configuração OAuth incorreta (DEVELOPER_ERROR). Confira pacote e SHA-1 no Firebase."
+                    12500 -> "Falha na configuração do login Google (12500). Confira os clientes OAuth."
+                    12501 -> "Login cancelado pelo usuário."
+                    7 -> "Sem conexão com a internet."
+                    else -> "Erro Google ${e.statusCode}: ${e.status.message ?: "não foi possível autenticar"}."
+                }
+                sendAuthResult(false, detail)
+            } catch (e: Exception) {
+                sendAuthResult(false, "Erro inesperado no login Google: ${e.message ?: "sem detalhes"}.")
             }
             return
         }
